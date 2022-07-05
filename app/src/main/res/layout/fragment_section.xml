@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.section.SectionFragment">
+
+    <LinearLayout
+        android:id="@+id/layoutSort"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_filters_widget"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/textViewSortBy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_filters_widget_start"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_dropdown"
+            android:drawablePadding="10dp"
+            android:focusable="true"
+            android:fontFamily="@font/goodpro"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/blue_zodiac"
+            android:textSize="12sp"
+            tools:text="EU" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:alpha="0.12"
+            android:background="@color/blue_zodiac" />
+
+        <TextView
+            android:id="@+id/textViewSort"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_filters_widget_end"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_dropdown"
+            android:drawablePadding="10dp"
+            android:focusable="true"
+            android:fontFamily="@font/goodpro"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:text="@string/sort"
+            android:textColor="@color/blue_zodiac"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_favourite"
-        android:name="com.example.exchangeratestracking.presentation.dashboard.FavouriteFragment"
+        android:name="com.example.exchangeratestracking.presentation.favourite.FavouriteFragment"
         android:label="@string/title_favourite"
         tools:layout="@layout/fragment_favourite" />
 
