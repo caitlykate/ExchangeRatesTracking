@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -52,4 +53,24 @@ dependencies {
     //retrofit2
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    //okhttp
+    def okhttpVersion = "5.0.0-alpha.3"
+    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttpVersion"
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+
+    //Room
+    implementation 'androidx.room:room-ktx:2.4.2'
+    kapt("androidx.room:room-compiler:2.4.2")
+    implementation "androidx.room:room-rxjava3:2.4.2"
+
+    //dagger2
+    implementation 'com.google.dagger:dagger:2.41'
+    kapt 'com.google.dagger:dagger-compiler:2.41'
+
+    //coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3'
 }

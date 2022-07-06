@@ -13,7 +13,8 @@
         android:clipToPadding="false"
         android:paddingBottom="72dp"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        tools:listitem="@layout/item_exchange_rate"/>
 
     <FrameLayout
         android:layout_width="match_parent"

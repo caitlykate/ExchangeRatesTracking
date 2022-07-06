@@ -1,6 +1,6 @@
 package com.example.exchangeratestracking.data.remote.api
 
-import com.example.exchangeratestracking.data.remote.api.responce.GetCurrentRateResponce
+import com.example.exchangeratestracking.data.remote.responce.GetCurrentRateResponce
 import retrofit2.http.GET
 import retrofit2.http.Query
 

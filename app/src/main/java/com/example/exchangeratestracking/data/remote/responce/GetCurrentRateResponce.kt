@@ -1,4 +1,4 @@
-package com.example.exchangeratestracking.data.remote.api.responce
+package com.example.exchangeratestracking.data.remote.responce
 
 data class GetCurrentRateResponce(
     val base: String,
