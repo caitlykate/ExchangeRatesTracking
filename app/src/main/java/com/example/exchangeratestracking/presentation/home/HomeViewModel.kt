@@ -8,16 +8,16 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class HomeViewModel : ViewModel() {
-
-    private val dao = dataBase.getDao()
+//
+//    private val dao = dataBase.getDao()
 
     private val _exchangeRates = MutableStateFlow<String>("").apply {
         value = "This is home Fragment"
     }
     val exchangeRates: StateFlow<String> = _exchangeRates
 
-
-    fun insertFavCurrency(currency: String) = viewModelScope.launch {            //в корутине
-        dao.insertNote(note)
-    }
+//
+//    fun insertFavCurrency(currency: String) = viewModelScope.launch {            //в корутине
+//        dao.insertNote(note)
+//    }
 }

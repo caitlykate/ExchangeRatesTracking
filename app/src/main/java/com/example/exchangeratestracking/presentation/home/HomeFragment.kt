@@ -17,6 +17,19 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val adapter = HomeAdapter(
+        onItemClick = { exchangeRate ->
+//            startActivity(
+//                WeatherDetailsActivity.getIntent(
+//                    context = this,
+//                    cityId = cityWeather.id,
+//                    cityName = cityWeather.cityName
+//                )
+//            )
+//            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+    )
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,11 +45,19 @@ class HomeFragment : Fragment() {
 //        homeViewModel.exchangeRates.collect(viewLifecycleOwner) {
 //            textView.text = it
 //        }
+        initRecyclerView()
         return root
     }
+
+
+    private fun initRecyclerView() {
+//        binding.
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 }

@@ -1,6 +1,6 @@
 package com.example.exchangeratestracking.domain.interactor
-
-import com.example.exchangeratestracking.data.local.db.MainDataBase
+//
+//import com.example.exchangeratestracking.data.local.db.MainDataBase
 
 //from db
 interface GetFavCurrenciesInteractor {
@@ -8,10 +8,13 @@ interface GetFavCurrenciesInteractor {
     fun getFavCurrencies() : List<String>
 }
 
-class GetFavCurrenciesInteractorImpl(private val db: MainDataBase) : GetFavCurrenciesInteractor {
+class GetFavCurrenciesInteractorImpl(
+//    private val db: MainDataBase
+    ) : GetFavCurrenciesInteractor {
 
     override fun getFavCurrencies(): List<String> {
-        return db.getDao().getAllFavCurrencies()
+        //return db.getDao().getAllFavCurrencies()
+        return listOf("lk","lidjfl")
     }
 
 }
