@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class HomeViewModel (private val getCurrentRatesInteractor: GetCurrentRatesInteractor) : ViewModel() {
+class HomeViewModel @Inject constructor (
+    private val getCurrentRatesInteractor: GetCurrentRatesInteractor
+    ) : ViewModel() {
 //
 //    private val _uiState = MutableStateFlow<ExchangeRatesUiState>(ExchangeRatesUiState.Empty)
 //    val uiState: StateFlow<ExchangeRatesUiState> = _uiState
@@ -39,13 +41,13 @@ class HomeViewModel (private val getCurrentRatesInteractor: GetCurrentRatesInter
 //    fun insertFavCurrency(currency: String) = viewModelScope.launch {            //в корутине
 //        dao.insertNote(note)
 //    }
-class Factory @Inject constructor(
-    private val getCurrentRatesInteractor: GetCurrentRatesInteractor
-) : ViewModelFactory<HomeViewModel> {
-    override fun create(handle: SavedStateHandle): HomeViewModel {
-        return HomeViewModel(
-            getCurrentRatesInteractor
-        )
-    }
-}
+//class Factory @Inject constructor(
+//    private val getCurrentRatesInteractor: GetCurrentRatesInteractor
+//) : ViewModelFactory<HomeViewModel> {
+//    override fun create(handle: SavedStateHandle): HomeViewModel {
+//        return HomeViewModel(
+//            getCurrentRatesInteractor
+//        )
+//    }
+//}
 }
