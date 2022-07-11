@@ -1,63 +1,45 @@
 package com.example.exchangeratestracking.presentation.home
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.exchangeratestracking.databinding.FragmentHomeBinding
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.exchangeratestracking.R
+import com.example.exchangeratestracking.di.withFactory
+import com.example.exchangeratestracking.presentation.BaseFragment
+import kotlinx.android.synthetic.main.fragment_home.*
+import javax.inject.Inject
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    override val layout: Int = R.layout.fragment_home
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    @Inject
+    lateinit var homeViewModelFactory: HomeViewModel.Factory
 
-    private val adapter = HomeAdapter(
-        onItemClick = { exchangeRate ->
-//            startActivity(
-//                WeatherDetailsActivity.getIntent(
-//                    context = this,
-//                    cityId = cityWeather.id,
-//                    cityName = cityWeather.cityName
-//                )
-//            )
-//            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    private val homeViewModel: HomeViewModel by viewModels { withFactory(homeViewModelFactory) }
+
+    private val adapter by lazy {
+        HomeAdapter{ exchangeRate ->
+            TODO()
         }
-    )
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textHome
-//        homeViewModel.exchangeRates.collect(viewLifecycleOwner) {
-//            textView.text = it
-//        }
-        initRecyclerView()
-        return root
     }
 
-
-    private fun initRecyclerView() {
-//        binding.
+    companion object {
+        fun newInstance() = HomeFragment()
     }
 
+    override fun onSetupLayout() {
+        recyclerViewContent.layoutManager = LinearLayoutManager(activity)
+        recyclerViewContent.adapter = adapter
+    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onObserveLiveData() {
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            homeViewModel.exchangeRates.collect { data ->
+                adapter.exchangeRateList = data
+            }
+        }
     }
 
 }
