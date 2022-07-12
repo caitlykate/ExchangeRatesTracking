@@ -1,23 +1,53 @@
 package com.example.exchangeratestracking.presentation.home
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.example.exchangeratestracking.di.ViewModelFactory
+import com.example.exchangeratestracking.domain.interactor.GetCurrentRatesInteractor
+import com.example.exchangeratestracking.presentation.entity.ExchangeRate
+//import com.example.exchangeratestracking.presentation.ExchangeRatesUiState
+//import com.example.exchangeratestracking.presentation.entity.ExchangeRate
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel @Inject constructor (
+    private val getCurrentRatesInteractor: GetCurrentRatesInteractor
+    ) : ViewModel() {
 //
-//    private val dao = dataBase.getDao()
+//    private val _uiState = MutableStateFlow<ExchangeRatesUiState>(ExchangeRatesUiState.Empty)
+//    val uiState: StateFlow<ExchangeRatesUiState> = _uiState
 
-    private val _exchangeRates = MutableStateFlow<String>("").apply {
-        value = "This is home Fragment"
+    private lateinit var _exchangeRates : MutableStateFlow<List<ExchangeRate>>
+    val exchangeRates: StateFlow<List<ExchangeRate>> = _exchangeRates
+
+    private var _showProgress = MutableStateFlow(true)
+    val showProgress: StateFlow<Boolean> = _showProgress
+
+    init {
+        viewModelScope.launch {
+            getCurrentRatesInteractor.getCurrentRates("RUB").collect { response ->
+                _exchangeRates.compareAndSet(_exchangeRates.value,response)
+            }
+        }
+
     }
-    val exchangeRates: StateFlow<String> = _exchangeRates
 
+    fun getRates(){
+//        _exchangeRates = apiService.getCurrentRate("RUB")
+    }
 //
 //    fun insertFavCurrency(currency: String) = viewModelScope.launch {            //в корутине
 //        dao.insertNote(note)
 //    }
+//class Factory @Inject constructor(
+//    private val getCurrentRatesInteractor: GetCurrentRatesInteractor
+//) : ViewModelFactory<HomeViewModel> {
+//    override fun create(handle: SavedStateHandle): HomeViewModel {
+//        return HomeViewModel(
+//            getCurrentRatesInteractor
+//        )
+//    }
+//}
 }
