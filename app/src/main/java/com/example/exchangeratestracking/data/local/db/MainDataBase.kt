@@ -1,17 +1,18 @@
 package com.example.exchangeratestracking.data.local.db
-
-import android.content.Context
+//
+//import android.content.Context
+//import androidx.room.Dao
 //import androidx.room.Database
 //import androidx.room.Room
 //import androidx.room.RoomDatabase
 //import com.example.exchangeratestracking.data.local.db.entity.FavouriteCurrenciesEntity
-
+//
 //@Database(
 //    entities = [
 //        FavouriteCurrenciesEntity::class,
 //    ],
 //    version = 1,
-////)
+//)
 //abstract class MainDataBase : RoomDatabase() {
 //
 //    abstract fun getDao(): Dao

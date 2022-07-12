@@ -24,4 +24,14 @@ abstract class BaseFragment : Fragment() {
         return v
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        onSetupLayout()
+        onCollectFlow()
+    }
+
+    abstract fun onSetupLayout()
+
+    abstract fun onCollectFlow()
+
 }

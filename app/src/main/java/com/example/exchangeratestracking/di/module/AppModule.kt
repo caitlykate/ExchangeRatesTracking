@@ -1,6 +1,6 @@
 package com.example.exchangeratestracking.di.module
 
-import android.content.Context
+//import android.content.Context
 //import androidx.room.Room
 //import com.example.exchangeratestracking.data.local.db.MainDataBase
 import com.example.exchangeratestracking.data.remote.api.ExchangeRatesApiService
@@ -17,7 +17,7 @@ class AppModule {
     fun provideApiService(): ExchangeRatesApiService {
         return ExchangeRatesApiServiceFactory.newInstance()
     }
-
+//
 //    @Provides
 //    @Singleton
 //    fun provideDb(context: Context): MainDataBase {

@@ -63,11 +63,11 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttpVersion"
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
-//    //Room
-//    def roomVersion = "2.4.2"
-//    implementation "androidx.room:room-ktx:$roomVersion"
-//    implementation "androidx.room:room-runtime:$roomVersion"
-//    kapt "androidx.room:room-compiler:$roomVersion"
+    //Room
+    def roomVersion = "2.4.2"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
 
     //dagger2
     def daggerVersion = '2.42'
