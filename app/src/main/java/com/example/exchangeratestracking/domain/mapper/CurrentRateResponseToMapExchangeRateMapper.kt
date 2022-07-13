@@ -2,8 +2,9 @@ package com.example.exchangeratestracking.domain.mapper
 
 import com.example.exchangeratestracking.data.remote.responce.CurrentRateResponce
 import com.example.exchangeratestracking.presentation.entity.ExchangeRate
+import javax.inject.Inject
 
-class CurrentRateResponseToMapExchangeRateMapper : (CurrentRateResponce) -> List<ExchangeRate> {
+class CurrentRateResponseToMapExchangeRateMapper @Inject constructor() : (CurrentRateResponce) -> List<ExchangeRate> {
 
     override fun invoke(currentRateResponce: CurrentRateResponce): List<ExchangeRate> {
 

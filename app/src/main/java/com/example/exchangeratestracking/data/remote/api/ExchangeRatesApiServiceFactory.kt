@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 
 object ExchangeRatesApiServiceFactory {
     private const val CONNECTION_TIMEOUT_MS = 3_000L
-    private const val BASE_URL = "https://api.exchangerate.host/latest"
+    private const val BASE_URL = "https://api.exchangerate.host/"
 
     fun newInstance(): ExchangeRatesApiService {
         val retrofit = Retrofit.Builder()
