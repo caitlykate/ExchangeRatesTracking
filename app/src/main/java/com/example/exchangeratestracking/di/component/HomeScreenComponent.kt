@@ -3,8 +3,8 @@ package com.example.exchangeratestracking.di.component
 import androidx.lifecycle.ViewModel
 import com.example.exchangeratestracking.data.remote.api.ExchangeRatesApiService
 import com.example.exchangeratestracking.di.ViewModelFactory
+import com.example.exchangeratestracking.di.ViewModelKey
 import com.example.exchangeratestracking.di.scope.ScreenScope
-import com.example.exchangeratestracking.di.scope.ViewModelKey
 import com.example.exchangeratestracking.presentation.home.HomeViewModel
 import dagger.Binds
 import dagger.BindsInstance

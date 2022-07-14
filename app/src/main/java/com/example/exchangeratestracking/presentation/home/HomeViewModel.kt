@@ -3,7 +3,7 @@ package com.example.exchangeratestracking.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeratestracking.domain.interactor.GetCurrentRatesInteractor
-import com.example.exchangeratestracking.presentation.ExchangeRatesUiState
+import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -19,38 +19,26 @@ class HomeViewModel @Inject constructor (
 //    private lateinit var _exchangeRates : MutableStateFlow<List<ExchangeRate>>
 //    val exchangeRates: StateFlow<List<ExchangeRate>> = _exchangeRates
 
-    private var _showProgress = MutableStateFlow(true)
-    val showProgress: StateFlow<Boolean> = _showProgress
-
     init {
+        fetchRates()
+    }
+
+    private fun fetchRates() {
+        _uiState.value = ExchangeRatesUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _uiState.tryEmit(ExchangeRatesUiState.Loaded(getCurrentRatesInteractor.getCurrentRates("RUB")))
+//                _uiState.tryEmit(ExchangeRatesUiState.Loaded(getCurrentRatesInteractor.getCurrentRates("RUB")))
+                _uiState.value = ExchangeRatesUiState.Loaded(getCurrentRatesInteractor.getCurrentRates("RUB"))
+
             } catch (ex: Exception) {
                 onErrorOccurred()
             }
         }
-
     }
 
     private fun onErrorOccurred() {
-//        TODO("Not yet implemented")
+        _uiState.value = ExchangeRatesUiState.Error()
     }
 
-    fun getRates(){
-//        _exchangeRates = apiService.getCurrentRate("RUB")
-    }
-//
-//    fun insertFavCurrency(currency: String) = viewModelScope.launch {            //в корутине
-//        dao.insertNote(note)
-//    }
-//class Factory @Inject constructor(
-//    private val getCurrentRatesInteractor: GetCurrentRatesInteractor
-//) : ViewModelFactory<HomeViewModel> {
-//    override fun create(handle: SavedStateHandle): HomeViewModel {
-//        return HomeViewModel(
-//            getCurrentRatesInteractor
-//        )
-//    }
-//}
+
 }

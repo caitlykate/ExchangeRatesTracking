@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_favourite">Favourite</string>
     <string name="sort">Сортировка</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="no_data_available">Данные не доступны</string>
 </resources>

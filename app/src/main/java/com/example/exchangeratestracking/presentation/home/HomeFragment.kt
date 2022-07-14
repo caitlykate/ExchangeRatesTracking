@@ -1,21 +1,14 @@
 package com.example.exchangeratestracking.presentation.home
 
-import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
-import com.example.exchangeratestracking.databinding.FragmentHomeBinding
 import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
 import com.example.exchangeratestracking.presentation.BaseFragment
-import com.example.exchangeratestracking.presentation.ExchangeRatesUiState
+import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment() {
@@ -34,6 +27,7 @@ class HomeFragment : BaseFragment() {
 
     private val adapter by lazy {
         HomeAdapter{ exchangeRate ->
+            Log.d("test","$exchangeRate")
             TODO()
         }
     }
@@ -43,14 +37,33 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun onCollectFlow() {
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenStarted() {
             viewModel.uiState.collect{ state ->
-//                when (state) {
-//                    ExchangeRatesUiState.Loaded{} -> progressBar.visibility = View.VISIBLE
-//                    ExchangeRatesUiState.Loading -> progressBar.visibility = View.VISIBLE
-//                    ExchangeRatesUiState.Empty -> progressBar.visibility = View.VISIBLE
-//                    ExchangeRatesUiState.Error -> progressBar.visibility = View.VISIBLE
-//                }
+                when (state) {
+                    is ExchangeRatesUiState.Loaded -> {
+                        recyclerViewContent.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        errorTV.visibility = View.GONE
+                        adapter.exchangeRateList = state.data
+                    }
+                    is ExchangeRatesUiState.Loading -> {
+                        recyclerViewContent.visibility = View.GONE
+                        progressBar.visibility = View.VISIBLE
+                        errorTV.visibility = View.GONE
+                    }
+                    is ExchangeRatesUiState.Empty -> {
+                        recyclerViewContent.visibility = View.GONE
+                        emptyTV.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        errorTV.visibility = View.GONE
+                        adapter.exchangeRateList = emptyList()
+                    }
+                    is ExchangeRatesUiState.Error -> {
+                        recyclerViewContent.visibility = View.GONE
+                        progressBar.visibility = View.GONE
+                        errorTV.visibility = View.VISIBLE
+                    }
+                }
             }
         }
     }
