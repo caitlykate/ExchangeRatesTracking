@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.exchangeratestracking.domain.interactor.GetCurrentRatesInteractor
 import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class HomeViewModel @Inject constructor (
         _uiState.value = ExchangeRatesUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                delay(3000)
 //                _uiState.tryEmit(ExchangeRatesUiState.Loaded(getCurrentRatesInteractor.getCurrentRates("RUB")))
                 _uiState.value = ExchangeRatesUiState.Loaded(getCurrentRatesInteractor.getCurrentRates("RUB"))
 

@@ -1,6 +1,6 @@
-package com.example.exchangeratestracking.data.remote.responce
+package com.example.exchangeratestracking.data.remote.response
 
-data class CurrentRateResponce(
+data class CurrentRateResponse(
     val base: String,
     val date: String,
     val motd: Motd,
