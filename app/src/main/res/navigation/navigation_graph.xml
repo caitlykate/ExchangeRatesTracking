@@ -9,12 +9,25 @@
         android:id="@+id/navigation_home"
         android:name="com.example.exchangeratestracking.presentation.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_sortFragment"
+            app:destination="@id/sortFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_favourite"
         android:name="com.example.exchangeratestracking.presentation.favourite.FavouriteFragment"
         android:label="@string/title_favourite"
-        tools:layout="@layout/fragment_favourite" />
+        tools:layout="@layout/fragment_favourite" >
+        <action
+            android:id="@+id/action_navigation_favourite_to_sortFragment"
+            app:destination="@id/sortFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sortFragment"
+        android:name="com.example.exchangeratestracking.presentation.sort.SortFragment"
+        android:label="fragment_sort"
+        tools:layout="@layout/fragment_sort" />
 
 </navigation>

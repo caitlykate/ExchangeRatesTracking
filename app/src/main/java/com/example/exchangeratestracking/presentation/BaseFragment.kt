@@ -28,10 +28,13 @@ abstract class BaseFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         onSetupLayout()
         onCollectFlow()
+        setOnClicks()
     }
 
     abstract fun onSetupLayout()
 
     abstract fun onCollectFlow()
+
+    abstract fun setOnClicks()
 
 }
