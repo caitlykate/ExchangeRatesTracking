@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/layoutSort"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
@@ -19,13 +19,26 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
-        <TextView
-            android:id="@+id/textViewSortBy"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_filters_widget_start"
-            android:clickable="true"
-            android:drawableEnd="@drawable/ic_dropdown"
+<!--        <Spinner-->
+<!--            android:id="@+id/spinnerCurrency"-->
+<!--            android:layout_width="80dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@drawable/bg_filters_widget_start"-->
+<!--            android:clickable="true"-->
+<!--            android:drawablePadding="10dp"-->
+<!--            android:focusable="true"-->
+<!--            android:fontFamily="@font/goodpro"-->
+<!--            android:gravity="center"-->
+<!--            android:paddingStart="8dp"-->
+<!--            android:paddingEnd="10dp"-->
+<!--            android:textColor="@color/blue_zodiac"-->
+<!--            android:textSize="12sp"-->
+<!--            android:spinnerMode="dropdown"-->
+<!--            app:drawableEndCompat="@drawable/ic_dropdown" />-->
+        <Spinner
+            android:id="@+id/spinnerCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:drawablePadding="10dp"
             android:focusable="true"
             android:fontFamily="@font/goodpro"
@@ -34,14 +47,14 @@
             android:paddingEnd="10dp"
             android:textColor="@color/blue_zodiac"
             android:textSize="12sp"
-            tools:text="EU" />
+            />
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="18dp"
-            android:layout_gravity="center_vertical"
-            android:alpha="0.12"
-            android:background="@color/blue_zodiac" />
+<!--        <View-->
+<!--            android:layout_width="1dp"-->
+<!--            android:layout_height="18dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:alpha="0.12"-->
+<!--            android:background="@color/blue_zodiac" />-->
 
         <TextView
             android:id="@+id/textViewSort"
@@ -49,7 +62,6 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_filters_widget_end"
             android:clickable="true"
-            android:drawableEnd="@drawable/ic_dropdown"
             android:drawablePadding="10dp"
             android:focusable="true"
             android:fontFamily="@font/goodpro"
@@ -58,7 +70,8 @@
             android:paddingEnd="8dp"
             android:text="@string/sort"
             android:textColor="@color/blue_zodiac"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            app:drawableEndCompat="@drawable/ic_dropdown" />
     </LinearLayout>
 
     <FrameLayout

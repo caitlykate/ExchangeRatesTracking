@@ -4,5 +4,5 @@ sealed class ExchangeRatesUiState {
     object Empty : ExchangeRatesUiState()
     object Loading : ExchangeRatesUiState()
     class Loaded(val data: List<ExchangeRate>) : ExchangeRatesUiState()
-    class Error : ExchangeRatesUiState()
+    object Error : ExchangeRatesUiState()
 }

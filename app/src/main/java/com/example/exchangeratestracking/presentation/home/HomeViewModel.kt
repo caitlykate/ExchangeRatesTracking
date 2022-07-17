@@ -39,7 +39,7 @@ class HomeViewModel @Inject constructor (
     }
 
     private fun onErrorOccurred() {
-        _uiState.value = ExchangeRatesUiState.Error()
+        _uiState.value = ExchangeRatesUiState.Error
     }
 
 
