@@ -64,14 +64,18 @@
             android:clickable="true"
             android:drawablePadding="10dp"
             android:focusable="true"
-            android:fontFamily="@font/goodpro"
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingEnd="8dp"
             android:text="@string/sort"
-            android:textColor="@color/blue_zodiac"
-            android:textSize="12sp"
-            app:drawableEndCompat="@drawable/ic_dropdown" />
+            app:drawableEndCompat="@drawable/ic_dropdown"
+            android:layout_marginStart="8dp"
+            android:padding="7dp"
+            android:fontFamily="@font/goodpro_extd"
+            android:lineSpacingExtra="0sp"
+            android:textAppearance="@style/TextAppearance.H4"
+            android:textColor="@color/pewter_blue"
+            tools:text="Example" />
     </LinearLayout>
 
     <FrameLayout

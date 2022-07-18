@@ -20,7 +20,7 @@ class HomeViewModel @Inject constructor (
             fetchRates()
         }
 
-    var chosenSort = 1
+    var chosenSort = 0
 
     private val _uiState = MutableStateFlow<ExchangeRatesUiState>(ExchangeRatesUiState.Empty)
     val uiState: StateFlow<ExchangeRatesUiState> = _uiState
@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor (
         _uiState.value = ExchangeRatesUiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                delay(3000)
+                delay(1500)
 //                _uiState.tryEmit(ExchangeRatesUiState.Loaded(getCurrentRatesInteractor.getCurrentRates("RUB")))
                 _uiState.value = ExchangeRatesUiState.Loaded(getCurrentRatesInteractor.getCurrentRates(requestCurrency))
 

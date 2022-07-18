@@ -11,9 +11,12 @@ import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
 import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
 import com.example.exchangeratestracking.presentation.BaseFragment
+import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
 import com.example.exchangeratestracking.presentation.sort.SortFragment
+import com.example.exchangeratestracking.utils.Utils
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.util.*
 
 class HomeFragment : BaseFragment() {
 
@@ -42,6 +45,10 @@ class HomeFragment : BaseFragment() {
     override fun onSetupLayout() {
         recyclerViewContent.adapter = adapter
         spinnerCurrency.adapter = spinnerAdapter
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(SortFragment.SORT_TYPE)?.observe(viewLifecycleOwner){
+            textViewSort.text = listOfSorts[it]
+            viewModel.chosenSort = it
+        }
     }
 
     override fun onCollectFlow() {
@@ -53,7 +60,7 @@ class HomeFragment : BaseFragment() {
                         emptyTV.visibility = View.GONE
                         progressBar.visibility = View.GONE
                         errorTV.visibility = View.GONE
-                        adapter.exchangeRateList = state.data
+                        adapter.exchangeRateList = sort(state.data)
                     }
                     is ExchangeRatesUiState.Loading -> {
                         recyclerViewContent.visibility = View.GONE
@@ -77,6 +84,16 @@ class HomeFragment : BaseFragment() {
                 }
             }
         }
+    }
+
+    private fun sort(list: List<ExchangeRate>) : List<ExchangeRate>{
+        when (viewModel.chosenSort) {
+            0 -> Collections.sort(list, Utils.ExchangeRateAZComparator)
+            1 -> Collections.sort(list, Utils.ExchangeRateZAComparator)
+            2 -> Collections.sort(list, Utils.ExchangeRateAscComparator)
+            3 -> Collections.sort(list, Utils.ExchangeRateDescComparator)
+        }
+        return list
     }
 
     override fun setOnClicks() {

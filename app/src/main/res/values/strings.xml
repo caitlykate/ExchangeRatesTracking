@@ -15,4 +15,10 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+    <string-array name="sort_types">
+        <item>A-Z</item>
+        <item>Z-A</item>
+        <item>По возрастанию значения</item>
+        <item>По убыванию значения</item>
+    </string-array>
 </resources>
