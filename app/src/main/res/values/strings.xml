@@ -5,15 +5,8 @@
     <string name="sort">Сортировка</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="no_data_available">Данные не доступны</string>
-    <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+    <string-array name="example">
+        <item>EUR</item>
     </string-array>
     <string-array name="sort_types">
         <item>A-Z</item>

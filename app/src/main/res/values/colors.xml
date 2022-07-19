@@ -8,9 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue_zodiac">#0e3351</color>
+    <color name="blue_zodiac_transparent">#BB0e3351</color>
     <color name="nile_blue">#17334f</color>
-    <color name="pewter_blue">#93b7bb</color>
     <color name="grey_purple">#797186</color>
+    <color name="pewter_blue">#93b7bb</color>
     <color name="window_background">@color/white</color>
     <color name="aqua_haze">#eff4f5</color>
     <color name="mystic">#e5edee</color>

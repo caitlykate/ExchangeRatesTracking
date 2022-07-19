@@ -9,17 +9,18 @@
 
     <TextView
         android:id="@+id/currency_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="10dp"
+        android:gravity="start"
         android:paddingStart="40dp"
         android:text="123"
         tools:text="RUB" />
 
     <TextView
         android:id="@+id/value_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="10dp"
@@ -27,9 +28,10 @@
 
     <ImageView
         android:id="@+id/fav_iv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="5dp"
-        app:srcCompat="@drawable/ic_star_border" />
+        android:padding="10dp"
+        app:srcCompat="@drawable/ic_star_border"
+        android:contentDescription="@drawable/ic_star_border" />
 </LinearLayout>

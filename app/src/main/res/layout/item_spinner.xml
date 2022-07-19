@@ -32,15 +32,13 @@
 
     <TextView
         android:id="@+id/textViewItemTitle"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="8dp"
         android:padding="7dp"
         android:fontFamily="@font/goodpro_extd"
-        android:lineSpacingExtra="0sp"
-        android:textAppearance="@style/TextAppearance.H4"
-        android:textColor="@color/pewter_blue"
+        android:textSize="16sp"
+        android:textColor="@color/blue_zodiac"
         tools:text="Example" />
 
 </RelativeLayout>

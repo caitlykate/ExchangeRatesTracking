@@ -11,12 +11,9 @@ import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
 import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
 import com.example.exchangeratestracking.presentation.BaseFragment
-import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
 import com.example.exchangeratestracking.presentation.sort.SortFragment
-import com.example.exchangeratestracking.utils.Utils
 import kotlinx.android.synthetic.main.fragment_home.*
-import java.util.*
 
 class HomeFragment : BaseFragment() {
 
@@ -33,34 +30,40 @@ class HomeFragment : BaseFragment() {
     }
 
     private val adapter by lazy {
-        HomeAdapter{ exchangeRate ->
-            Log.d("test","$exchangeRate")
-            TODO()
+        HomeAdapter { exchangeRate ->
+            Log.d("test", "$exchangeRate")
         }
     }
 
     private val spinnerAdapter = SpinnerAdapter(listOfCurrencies)
 
+    private val sortTypes by lazy {
+        resources.getStringArray(R.array.sort_types)
+    }
 
     override fun onSetupLayout() {
         recyclerViewContent.adapter = adapter
         spinnerCurrency.adapter = spinnerAdapter
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(SortFragment.SORT_TYPE)?.observe(viewLifecycleOwner){
-            textViewSort.text = listOfSorts[it]
-            viewModel.chosenSort = it
-        }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(SortFragment.SORT_TYPE)
+            ?.observe(viewLifecycleOwner) {
+                textViewSort.text = sortTypes[it]
+                viewModel.sortPanelState.value.chosenSort = it
+                viewModel.sort()
+            }
+        textViewSort.text = sortTypes[viewModel.sortPanelState.value.chosenSort]
     }
 
     override fun onCollectFlow() {
         lifecycleScope.launchWhenStarted {
-            viewModel.uiState.collect{ state ->
+            viewModel.uiState.collect { state ->
                 when (state) {
                     is ExchangeRatesUiState.Loaded -> {
                         recyclerViewContent.visibility = View.VISIBLE
                         emptyTV.visibility = View.GONE
                         progressBar.visibility = View.GONE
                         errorTV.visibility = View.GONE
-                        adapter.exchangeRateList = sort(state.data)
+                        adapter.exchangeRateList = viewModel.sort(state.data)
                     }
                     is ExchangeRatesUiState.Loading -> {
                         recyclerViewContent.visibility = View.GONE
@@ -86,42 +89,37 @@ class HomeFragment : BaseFragment() {
         }
     }
 
-    private fun sort(list: List<ExchangeRate>) : List<ExchangeRate>{
-        when (viewModel.chosenSort) {
-            0 -> Collections.sort(list, Utils.ExchangeRateAZComparator)
-            1 -> Collections.sort(list, Utils.ExchangeRateZAComparator)
-            2 -> Collections.sort(list, Utils.ExchangeRateAscComparator)
-            3 -> Collections.sort(list, Utils.ExchangeRateDescComparator)
-        }
-        return list
-    }
 
     override fun setOnClicks() {
-        spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                val currency = listOfCurrencies[position]
-                viewModel.requestCurrency = currency
+                viewModel.onNewCurrencyClick(listOfCurrencies[position])
+//                val currency = listOfCurrencies[position]
+//                viewModel.sortPanelState.value.requestCurrency = currency
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-        textViewSort.setOnClickListener{
+        textViewSort.setOnClickListener {
             openSortFrag()
         }
     }
 
     //добавить анимацию
-    private fun openSortFrag(){
-        findNavController().navigate(R.id.action_navigation_home_to_sortFragment, bundleOf(SortFragment.SORT_TYPE to viewModel.chosenSort))
+    private fun openSortFrag() {
+        findNavController().navigate(
+            R.id.action_navigation_home_to_sortFragment,
+            bundleOf(SortFragment.SORT_TYPE to viewModel.sortPanelState.value.chosenSort)
+        )
     }
 
-    companion object{
+    companion object {
         private val listOfCurrencies = listOf(
             "AMD",
             "AUD",
@@ -160,8 +158,8 @@ class HomeFragment : BaseFragment() {
             "ZAR",
             "ZWL"
         )
-        private val listOfSorts = listOf("По алфавиту","По алфавиту с конца","По возрастанию значения","По убыванию значения")
     }
+
 }
 //
 //data class Currency(

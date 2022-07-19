@@ -16,66 +16,42 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/bg_filters_widget"
         android:elevation="2dp"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:orientation="horizontal">
 
-<!--        <Spinner-->
-<!--            android:id="@+id/spinnerCurrency"-->
-<!--            android:layout_width="80dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="@drawable/bg_filters_widget_start"-->
-<!--            android:clickable="true"-->
-<!--            android:drawablePadding="10dp"-->
-<!--            android:focusable="true"-->
-<!--            android:fontFamily="@font/goodpro"-->
-<!--            android:gravity="center"-->
-<!--            android:paddingStart="8dp"-->
-<!--            android:paddingEnd="10dp"-->
-<!--            android:textColor="@color/blue_zodiac"-->
-<!--            android:textSize="12sp"-->
-<!--            android:spinnerMode="dropdown"-->
-<!--            app:drawableEndCompat="@drawable/ic_dropdown" />-->
         <Spinner
             android:id="@+id/spinnerCurrency"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="10dp"
+            android:layout_height="match_parent"
             android:focusable="true"
-            android:fontFamily="@font/goodpro"
+            android:fontFamily="@font/goodpro_extd"
             android:gravity="center"
-            android:paddingStart="8dp"
-            android:paddingEnd="10dp"
-            android:textColor="@color/blue_zodiac"
-            android:textSize="12sp"
+            android:paddingEnd="7dp"
+            android:entries="@array/example"
+            android:backgroundTint="@color/blue_zodiac_transparent"
+            android:textSize="16sp"
             />
 
-<!--        <View-->
-<!--            android:layout_width="1dp"-->
-<!--            android:layout_height="18dp"-->
-<!--            android:layout_gravity="center_vertical"-->
-<!--            android:alpha="0.12"-->
-<!--            android:background="@color/blue_zodiac" />-->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:alpha="0.12"
+            android:background="@color/blue_zodiac" />
 
         <TextView
             android:id="@+id/textViewSort"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_filters_widget_end"
             android:clickable="true"
-            android:drawablePadding="10dp"
             android:focusable="true"
             android:gravity="center"
-            android:paddingStart="16dp"
+            android:paddingStart="10dp"
             android:paddingEnd="8dp"
-            android:text="@string/sort"
-            app:drawableEndCompat="@drawable/ic_dropdown"
-            android:layout_marginStart="8dp"
-            android:padding="7dp"
+            tools:text="@string/sort"
+            app:drawableEndCompat="@drawable/ic_arrow_drop_down"
             android:fontFamily="@font/goodpro_extd"
-            android:lineSpacingExtra="0sp"
-            android:textAppearance="@style/TextAppearance.H4"
-            android:textColor="@color/pewter_blue"
-            tools:text="Example" />
+            android:textSize="16sp"
+            android:textColor="@color/blue_zodiac"/>
     </LinearLayout>
 
     <FrameLayout

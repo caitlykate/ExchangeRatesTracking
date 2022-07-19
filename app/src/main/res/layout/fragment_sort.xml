@@ -13,7 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:gravity="center"
-        android:text="Сортировка"
+        android:text="@string/sort"
+        android:fontFamily="@font/goodpro_extd"
+        android:lineSpacingExtra="0sp"
+        android:textColor="@color/blue_zodiac"
         android:textSize="24sp" />
 
     <androidx.recyclerview.widget.RecyclerView
