@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:text="@string/no_data_available" />
+            tools:text="@string/no_data_available" />
 
         <TextView
             android:id="@+id/errorTV"

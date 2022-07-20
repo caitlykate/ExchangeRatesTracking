@@ -3,13 +3,10 @@ package com.example.exchangeratestracking.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeratestracking.domain.interactor.GetCurrentRatesInteractor
-import com.example.exchangeratestracking.presentation.entity.ExchangeRate
-import com.example.exchangeratestracking.presentation.entity.ExchangeRatesState
-import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
-import com.example.exchangeratestracking.presentation.entity.LoadingState
-import com.example.exchangeratestracking.presentation.entity.SortType
+import com.example.exchangeratestracking.presentation.entity.*
 import com.example.exchangeratestracking.utils.Utils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +20,7 @@ class HomeViewModel @Inject constructor(
             rates = emptyList(),
             loadingState = LoadingState.Success,
             sort = SortType.AZ,
-            currency = "", // TODO
+            currency = listOfCurrencies.first(),
         )
     )
     val uiState: Flow<ExchangeRatesUiState> = exchangeRatesStateMutableStateFlow.map { state ->

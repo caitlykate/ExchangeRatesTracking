@@ -43,6 +43,45 @@ enum class SortType(@StringRes val titleRes: Int) {
     DESC(titleRes = R.string.sort_type_desc)
 }
 
+val listOfCurrencies = listOf(
+        "AMD",
+        "AUD",
+        "AZN",
+        "BGN",
+        "BRL",
+        "BYN",
+        "CAD",
+        "CHF",
+        "CNY",
+        "CZK",
+        "DKK",
+        "EUR",
+        "GBP",
+        "HKD",
+        "HUF",
+        "INR",
+        "JPY",
+        "KGS",
+        "KRW",
+        "KZT",
+        "MDL",
+        "NOK",
+        "PLN",
+        "RON",
+        "RUB",
+        "SEK",
+        "SGD",
+        "TJS",
+        "TMT",
+        "TRY",
+        "UAH",
+        "USD",
+        "UZS",
+        "XDR",
+        "ZAR",
+        "ZWL"
+    )
+
 //
 //enum class Sort {
 //    A, B, C
