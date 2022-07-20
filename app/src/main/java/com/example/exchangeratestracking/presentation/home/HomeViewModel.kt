@@ -7,33 +7,22 @@ import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import com.example.exchangeratestracking.presentation.entity.ExchangeRatesState
 import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
 import com.example.exchangeratestracking.presentation.entity.LoadingState
-import com.example.exchangeratestracking.presentation.entity.SortPanelState
+import com.example.exchangeratestracking.presentation.entity.SortType
 import com.example.exchangeratestracking.utils.Utils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
     private val getCurrentRatesInteractor: GetCurrentRatesInteractor
 ) : ViewModel() {
 
-//
-//    var requestCurrency = "AMD"
-//        set(value) {
-//            field = value
-//            fetchRates()
-//        }
-//
-//    var chosenSort = 0
-
     private val exchangeRatesStateMutableStateFlow = MutableStateFlow(
         ExchangeRatesState(
             rates = emptyList(),
             loadingState = LoadingState.Success,
-            sort = 0,
+            sort = SortType.AZ,
             currency = "", // TODO
         )
     )
@@ -42,7 +31,7 @@ class HomeViewModel @Inject constructor(
             val sortedRates = when (loadingState) {
                 is LoadingState.Success -> sortedRates(
                     rates = rates,
-                    sortNum = sort,
+                    sortType = sort,
                 )
                 else -> emptyList()
             }
@@ -56,9 +45,6 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
-
-//    private val sortPanelMutableStateFlow = MutableStateFlow(SortPanelState("AMD", 0))
-//    val sortPanelStateFlow: StateFlow<SortPanelState> get() = sortPanelMutableStateFlow
 
     init {
         fetchRates(currency = exchangeRatesStateMutableStateFlow.value.currency)
@@ -90,28 +76,25 @@ class HomeViewModel @Inject constructor(
         fetchRates(currency = currencyName)
     }
 
-    fun onNewSortClick(sortNum: Int) {
+    fun onNewSortClick(sortType: SortType) {
         exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-            sort = sortNum,
+            sort = sortType,
         )
     }
 
     private fun sortedRates(
         rates: List<ExchangeRate>,
-        sortNum: Int,
+        sortType: SortType,
     ): List<ExchangeRate> {
-//        rates.sortedWith()
 
-        val sortedList = Collections.sort(
-            rates,
-            when (sortNum) {
-                0 -> Utils.ExchangeRateAZComparator
-                1 -> Utils.ExchangeRateZAComparator
-                2 -> Utils.ExchangeRateAscComparator
-                3 -> Utils.ExchangeRateDescComparator
-                else -> error("Unexpected sortNum")
+        val sortedList = rates.sortedWith(
+            when (sortType) {
+                SortType.AZ -> Utils.ExchangeRateAZComparator
+                SortType.ZA -> Utils.ExchangeRateZAComparator
+                SortType.ASC -> Utils.ExchangeRateAscComparator
+                SortType.DESC -> Utils.ExchangeRateDescComparator
             }
         )
-        return rates
+        return sortedList
     }
 }

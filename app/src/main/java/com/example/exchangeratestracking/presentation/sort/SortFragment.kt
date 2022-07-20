@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.exchangeratestracking.R
+import com.example.exchangeratestracking.presentation.entity.SortType
 import kotlinx.android.synthetic.main.fragment_sort.*
 
 class SortFragment : Fragment(){
@@ -20,19 +21,9 @@ class SortFragment : Fragment(){
 
     private lateinit var viewModel: SortViewModel
 
-//    private val sortList : List<CatalogDetailedFilterValue> =
-//        listOf(
-//            CatalogDetailedFilterValue(0,"A-Z", false),
-//            CatalogDetailedFilterValue(1,"Z-A", false),
-//            CatalogDetailedFilterValue(2,"По возрастанию значения", false),
-//            CatalogDetailedFilterValue(3,"По убыванию значения", false),
-//        )
-
-    private var sortTypes = ArrayList<SortType>()
-
     private val valuesAdapter by lazy {
         SortValuesAdapter(
-            sortTypes = sortTypes,
+            checkedSortType = requireArguments().getSerializable(SORT_TYPE) as SortType,
             onItemClick = { sortType ->
                 run {
                     findNavController().previousBackStackEntry?.savedStateHandle?.set(
@@ -53,35 +44,19 @@ class SortFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val new = resources.getStringArray(R.array.sort_types)
-        for (i in new.indices) {
-            sortTypes.add(SortType(i, new[i], false))
-        }
-
-        val sort = requireArguments().getInt(SORT_TYPE)
-//
-//        sortList[sort].isChecked = true
 
         recyclerViewFilter.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = valuesAdapter
-//                .apply {
-////                submitList(sortList)
-////            }
-            valuesAdapter.checkedItem = sort
         }
 
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SortViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel = ViewModelProvider(this)[SortViewModel::class.java]
     }
-//
-//    override fun onMethodCallback(sortBy: Int) {
-//        findNavController().previousBackStackEntry?.savedStateHandle?.set(SORT_TYPE, sortBy)
-//    }
+
 
 
 }

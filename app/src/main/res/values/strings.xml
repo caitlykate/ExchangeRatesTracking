@@ -14,4 +14,8 @@
         <item>По возрастанию значения</item>
         <item>По убыванию значения</item>
     </string-array>
+    <string name="sort_type_az">A-Z</string>
+    <string name="sort_type_za">Z-A</string>
+    <string name="sort_type_asc">По возрастанию значения</string>
+    <string name="sort_type_desc">По убыванию значения</string>
 </resources>

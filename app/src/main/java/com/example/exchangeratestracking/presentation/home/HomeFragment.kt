@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -11,9 +12,10 @@ import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
 import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
 import com.example.exchangeratestracking.presentation.BaseFragment
-import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
+import com.example.exchangeratestracking.presentation.entity.SortType
 import com.example.exchangeratestracking.presentation.sort.SortFragment
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment() {
 
@@ -31,60 +33,59 @@ class HomeFragment : BaseFragment() {
 
     private val adapter by lazy {
         HomeAdapter { exchangeRate ->
-            Log.d("test", "$exchangeRate")
+            Log.d("test", "$exchangeRate") //добавить onClick
         }
     }
 
     private val spinnerAdapter = SpinnerAdapter(listOfCurrencies)
 
-    private val sortTypes by lazy {
-        resources.getStringArray(R.array.sort_types)
-    }
-
     override fun onSetupLayout() {
         recyclerViewContent.adapter = adapter
         spinnerCurrency.adapter = spinnerAdapter
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(SortFragment.SORT_TYPE)
-            ?.observe(viewLifecycleOwner) {
-                textViewSort.text = sortTypes[it]
-                viewModel.sortPanelState.value.chosenSort = it
-                viewModel.sort()
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(SortFragment.SORT_TYPE)
+            ?.observe(viewLifecycleOwner) { sortType ->
+                viewModel.onNewSortClick(sortType)
             }
-        textViewSort.text = sortTypes[viewModel.sortPanelState.value.chosenSort]
     }
 
     override fun onCollectFlow() {
         lifecycleScope.launchWhenStarted {
-            viewModel.uiState.collect { state ->
-                when (state) {
-                    is ExchangeRatesUiState.Loaded -> {
-                        recyclerViewContent.visibility = View.VISIBLE
-                        emptyTV.visibility = View.GONE
-                        progressBar.visibility = View.GONE
-                        errorTV.visibility = View.GONE
-                        adapter.exchangeRateList = viewModel.sort(state.data)
-                    }
-                    is ExchangeRatesUiState.Loading -> {
-                        recyclerViewContent.visibility = View.GONE
-                        emptyTV.visibility = View.GONE
-                        progressBar.visibility = View.VISIBLE
-                        errorTV.visibility = View.GONE
-                    }
-                    is ExchangeRatesUiState.Empty -> {
-                        recyclerViewContent.visibility = View.GONE
-                        emptyTV.visibility = View.VISIBLE
-                        progressBar.visibility = View.GONE
-                        errorTV.visibility = View.GONE
-                        adapter.exchangeRateList = emptyList()
-                    }
-                    is ExchangeRatesUiState.Error -> {
-                        recyclerViewContent.visibility = View.GONE
-                        emptyTV.visibility = View.GONE
-                        progressBar.visibility = View.GONE
-                        errorTV.visibility = View.VISIBLE
-                    }
-                }
+            viewModel.uiState.collect { uiState ->
+//                when (uiState.) {
+//                    is ExchangeRatesUiState. -> {
+//                        recyclerViewContent.visibility = View.VISIBLE
+//                        emptyTV.visibility = View.GONE
+//                        progressBar.visibility = View.GONE
+//                        errorTV.visibility = View.GONE
+//                        adapter.exchangeRateList = viewModel.sort(uiState.data)
+//                    }
+//                    is ExchangeRatesUiState.Loading -> {
+//                        recyclerViewContent.visibility = View.GONE
+//                        emptyTV.visibility = View.GONE
+//                        progressBar.visibility = View.VISIBLE
+//                        errorTV.visibility = View.GONE
+//                    }
+//                    is ExchangeRatesUiState.Empty -> {
+//                        recyclerViewContent.visibility = View.GONE
+//                        emptyTV.visibility = View.VISIBLE
+//                        progressBar.visibility = View.GONE
+//                        errorTV.visibility = View.GONE
+//                        adapter.exchangeRateList = emptyList()
+//                    }
+//                    is ExchangeRatesUiState.Error -> {
+//                        recyclerViewContent.visibility = View.GONE
+//                        emptyTV.visibility = View.GONE
+//                        progressBar.visibility = View.GONE
+//                        errorTV.visibility = View.VISIBLE
+//                    }
+//                }
+                recyclerViewContent.isVisible = !uiState.rates.isEmpty()
+                emptyTV.isVisible = uiState.rates.isEmpty()
+                progressBar.isVisible = uiState.isLoaderVisible
+                errorTV.isVisible = uiState.hasError
+                adapter.exchangeRateList = uiState.rates
+                textViewSort.text = getString(uiState.sort.titleRes)
             }
         }
     }
@@ -99,8 +100,6 @@ class HomeFragment : BaseFragment() {
                 id: Long
             ) {
                 viewModel.onNewCurrencyClick(listOfCurrencies[position])
-//                val currency = listOfCurrencies[position]
-//                viewModel.sortPanelState.value.requestCurrency = currency
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -113,10 +112,20 @@ class HomeFragment : BaseFragment() {
 
     //добавить анимацию
     private fun openSortFrag() {
-        findNavController().navigate(
-            R.id.action_navigation_home_to_sortFragment,
-            bundleOf(SortFragment.SORT_TYPE to viewModel.sortPanelState.value.chosenSort)
-        )
+//        findNavController().navigate(
+//            R.id.action_navigation_home_to_sortFragment,
+//            bundleOf(SortFragment.SORT_TYPE to viewModel.uiState.collect{ uiState ->
+//                uiState.sort
+//            })
+//        )
+        lifecycleScope.launch {
+            findNavController().navigate(
+                R.id.action_navigation_home_to_sortFragment,
+                bundleOf(SortFragment.SORT_TYPE to viewModel.uiState.collect{ uiState ->
+                    uiState.sort
+                })
+            )
+        }
     }
 
     companion object {
@@ -159,29 +168,4 @@ class HomeFragment : BaseFragment() {
             "ZWL"
         )
     }
-
 }
-//
-//data class Currency(
-//    val name: String,
-//    var isSelected: Boolean
-//) : SpinnerListItem {
-//
-//    override fun getItemTitle(): String = name
-//
-//    override fun isSelected(selectedId: String?): Boolean {
-//        return isSelected
-//    }
-//}
-//
-//data class SortBy(
-//    val name: String,
-//    var isSelected: Boolean
-//) : SpinnerListItem {
-//
-//    override fun getItemTitle(): String = name
-//
-//    override fun isSelected(selectedId: String?): Boolean {
-//        return isSelected
-//    }
-//}
