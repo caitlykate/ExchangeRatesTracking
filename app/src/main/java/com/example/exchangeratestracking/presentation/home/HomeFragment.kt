@@ -12,6 +12,7 @@ import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
 import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
 import com.example.exchangeratestracking.presentation.BaseFragment
+import com.example.exchangeratestracking.presentation.SpinnerAdapter
 import com.example.exchangeratestracking.presentation.entity.SortType
 import com.example.exchangeratestracking.presentation.entity.listOfCurrencies
 import com.example.exchangeratestracking.presentation.sort.SortFragment
@@ -26,6 +27,7 @@ class HomeFragment : BaseFragment() {
     private val component by lazy {
         DaggerHomeScreenComponent.builder()
             .service(activity?.appComponent!!.apiService())
+            .db(activity?.appComponent!!.db())
             .build()
     }
 
@@ -57,15 +59,17 @@ class HomeFragment : BaseFragment() {
                 recyclerViewContent.isVisible = !uiState.rates.isEmpty()
                 emptyTV.isVisible = uiState.rates.isEmpty()
                 progressBar.isVisible = uiState.isLoaderVisible
-                errorTV.isVisible = uiState.hasError
-                adapter.exchangeRateList = uiState.rates
+                errorLayout.isVisible = uiState.hasError
+                adapter.exchangeRates = uiState.rates
                 sort = uiState.sort
                 textViewSort.text = getString(sort.titleRes)
 
             }
+            viewModel.favCurrencies.collect{
+
+            }
         }
     }
-
 
     override fun setOnClicks() {
         spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -83,6 +87,13 @@ class HomeFragment : BaseFragment() {
         }
         textViewSort.setOnClickListener {
             openSortFrag()
+        }
+        errorBtn.setOnClickListener {
+            viewModel.onRefresh()
+        }
+        ratesSwipeRefreshLayout.setOnRefreshListener {
+            ratesSwipeRefreshLayout.isRefreshing = false
+            viewModel.onRefresh()
         }
     }
 

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(tableName = "favourite_currencies")
-data class FavouriteCurrenciesEntity(
+data class FavouriteCurrencyEntity(
 
     @PrimaryKey
     @ColumnInfo(name = "char_code")

@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.item_exchange_rate.view.*
 class HomeAdapter(private val onItemClick: (exchangeRate: ExchangeRate) -> Unit,
 ) : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
 
-    var exchangeRateList: List<ExchangeRate> = emptyList()
+    var exchangeRates: List<ExchangeRate> = emptyList()
+        var favRates: List<String> = emptyList()
     @SuppressLint("NotifyDataSetChanged")
     set(newExchangeRateList) {
         field = newExchangeRateList
@@ -23,11 +24,11 @@ class HomeAdapter(private val onItemClick: (exchangeRate: ExchangeRate) -> Unit,
     }
 
     override fun onBindViewHolder(holder: HomeHolder, position: Int) {
-        holder.onBind(exchangeRate = exchangeRateList[position])
+        holder.onBind(exchangeRate = exchangeRates[position])
     }
 
     override fun getItemCount(): Int {
-        return exchangeRateList.size
+        return exchangeRates.size
     }
 
     inner class HomeHolder(

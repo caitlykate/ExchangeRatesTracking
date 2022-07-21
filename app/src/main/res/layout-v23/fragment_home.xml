@@ -111,13 +111,14 @@
                 android:id="@+id/errorTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
                 android:text="@string/something_went_wrong" />
 
             <Button
                 android:id="@+id/errorBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/blue_zodiac"
+                android:backgroundTint="@color/blue_zodiac"
                 android:text="@string/reload"
                 android:layout_margin="20dp">
 

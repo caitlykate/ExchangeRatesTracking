@@ -1,20 +1,24 @@
 package com.example.exchangeratestracking.domain.interactor
-//
-//import com.example.exchangeratestracking.data.local.db.MainDataBase
 
-//from db
+import com.example.exchangeratestracking.data.local.db.MainDataBase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+
 interface GetFavCurrenciesInteractor {
 
-    fun getFavCurrencies() : List<String>
+    fun get() : Flow<List<String>>
 }
 
-class GetFavCurrenciesInteractorImpl(
-//    private val db: MainDataBase
+class GetFavCurrenciesInteractorImpl @Inject constructor(
+    private val db: MainDataBase
     ) : GetFavCurrenciesInteractor {
 
-    override fun getFavCurrencies(): List<String> {
-        //return db.getDao().getAllFavCurrencies()
-        return listOf("lk","lidjfl")
+    override fun get(): Flow<List<String>> {
+        return db.getFavouriteCurrenciesDao().getAllFavCurrencies().map { favouriteCurrencyEntityList ->
+            favouriteCurrencyEntityList.map { favouriteCurrencyEntity ->
+                favouriteCurrencyEntity.toString()
+            }
+        }
     }
-
 }

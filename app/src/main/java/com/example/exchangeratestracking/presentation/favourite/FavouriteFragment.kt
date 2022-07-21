@@ -1,42 +1,106 @@
 package com.example.exchangeratestracking.presentation.favourite
 
-import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.exchangeratestracking.databinding.FragmentFavouriteBinding
+import android.widget.AdapterView
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.exchangeratestracking.R
+import com.example.exchangeratestracking.appComponent
+import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
+import com.example.exchangeratestracking.presentation.BaseFragment
+import com.example.exchangeratestracking.presentation.SpinnerAdapter
+import com.example.exchangeratestracking.presentation.entity.SortType
+import com.example.exchangeratestracking.presentation.entity.listOfCurrencies
+import com.example.exchangeratestracking.presentation.home.HomeAdapter
+import com.example.exchangeratestracking.presentation.home.HomeViewModel
+import com.example.exchangeratestracking.presentation.sort.SortFragment
+import kotlinx.android.synthetic.main.fragment_home.*
 
-class FavouriteFragment : Fragment() {
+class FavouriteFragment : BaseFragment() {
 
-    private var _binding: FragmentFavouriteBinding? = null
+    override val layout: Int = R.layout.fragment_home
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    lateinit var sort: SortType
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val favouriteViewModel =
-            ViewModelProvider(this).get(FavouriteViewModel::class.java)
-
-        _binding = FragmentFavouriteBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        val textView: TextView = binding.textDashboard
-        favouriteViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+    private val component by lazy {
+        DaggerHomeScreenComponent.builder()
+            .service(activity?.appComponent!!.apiService())
+            .build()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private val viewModel by viewModels<HomeViewModel> {
+        component.viewModelFactory()
+    }
+
+    private val adapter by lazy {
+        HomeAdapter { exchangeRate ->
+            Log.d("test", "$exchangeRate") //добавить onClick
+        }
+    }
+
+    private val spinnerAdapter = SpinnerAdapter(listOfCurrencies)
+
+    override fun onSetupLayout() {
+        recyclerViewContent.adapter = adapter
+        spinnerCurrency.adapter = spinnerAdapter
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(SortFragment.SORT_TYPE)
+            ?.observe(viewLifecycleOwner) { sortType ->
+                viewModel.onNewSortClick(sortType)
+            }
+    }
+
+    override fun onCollectFlow() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiState.collect { uiState ->
+                recyclerViewContent.isVisible = !uiState.rates.isEmpty()
+                emptyTV.isVisible = uiState.rates.isEmpty()
+                progressBar.isVisible = uiState.isLoaderVisible
+                errorLayout.isVisible = uiState.hasError
+                adapter.exchangeRates = uiState.rates
+                sort = uiState.sort
+                textViewSort.text = getString(sort.titleRes)
+
+            }
+        }
+    }
+
+    override fun setOnClicks() {
+        spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                viewModel.onNewCurrencyClick(listOfCurrencies[position])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        textViewSort.setOnClickListener {
+            openSortFrag()
+        }
+        errorBtn.setOnClickListener {
+            viewModel.onRefresh()
+        }
+        ratesSwipeRefreshLayout.setOnRefreshListener {
+            ratesSwipeRefreshLayout.isRefreshing = false
+            viewModel.onRefresh()
+        }
+    }
+
+    //добавить анимацию
+    private fun openSortFrag() {
+
+        findNavController().navigate(
+            R.id.action_navigation_home_to_sortFragment,
+            bundleOf(SortFragment.SORT_TYPE to sort)
+        )
     }
 }

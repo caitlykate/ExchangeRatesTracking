@@ -5,6 +5,7 @@
     <string name="sort">Сортировка</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="no_data_available">Данные не доступны</string>
+    <string name="reload">Перезагрузить</string>
     <string-array name="example">
         <item>EUR</item>
     </string-array>

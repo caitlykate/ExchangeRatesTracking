@@ -13,12 +13,6 @@ class GetCurrentRatesInteractor @Inject constructor(
     val mapper: CurrentRateResponseToMapExchangeRateMapper
 ) {
 
-//    fun getCurrentRates(base: String) : Flow<List<ExchangeRate>> {
-//        return flow {
-//            emit(mapper(apiService.getCurrentRate(base).body()!!))
-//        }
-//    }
-
     suspend fun getCurrentRates(base: String) : List<ExchangeRate> {
         val response = apiService.getCurrentRate(base)
         Log.d("test", "$response")
