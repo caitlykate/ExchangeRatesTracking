@@ -3,8 +3,10 @@ package com.example.exchangeratestracking.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeratestracking.data.local.db.MainDataBase
+import com.example.exchangeratestracking.domain.interactor.DeleteFavCurrencyInteractor
 import com.example.exchangeratestracking.domain.interactor.GetCurrentRatesInteractor
 import com.example.exchangeratestracking.domain.interactor.GetFavCurrenciesInteractor
+import com.example.exchangeratestracking.domain.interactor.InsertFavCurrencyInteractor
 import com.example.exchangeratestracking.presentation.entity.*
 import com.example.exchangeratestracking.utils.Utils
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +19,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getCurrentRatesInteractor: GetCurrentRatesInteractor,
     private val getFavCurrenciesInteractor: GetFavCurrenciesInteractor,
+    private val insertFavCurrencyInteractor: InsertFavCurrencyInteractor,
+    private val deleteFavCurrencyInteractor: DeleteFavCurrencyInteractor,
 ) : ViewModel() {
 
     private val exchangeRatesStateMutableStateFlow = MutableStateFlow(
@@ -46,8 +50,8 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
-    val favCurrencies = getFavCurrenciesInteractor.get()
-        .stateIn(scope = viewModelScope, started = SharingStarted.Lazily, emptyList())
+    val favCurrenciesMutableStateFlow  = getFavCurrenciesInteractor.get()
+        .stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, emptyList())
 
     init {
         fetchRates(currency = exchangeRatesStateMutableStateFlow.value.currency)
@@ -71,6 +75,16 @@ class HomeViewModel @Inject constructor(
                 exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
                     loadingState = LoadingState.Error,
                 )
+            }
+        }
+    }
+
+    fun onFavClick(currency: String, isPressed: Boolean){
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isPressed) {
+                deleteFavCurrencyInteractor.delete(currency)
+            } else {
+                insertFavCurrencyInteractor.insert(currency)
             }
         }
     }

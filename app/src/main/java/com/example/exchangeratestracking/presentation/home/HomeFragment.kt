@@ -36,8 +36,9 @@ class HomeFragment : BaseFragment() {
     }
 
     private val adapter by lazy {
-        HomeAdapter { exchangeRate ->
-            Log.d("test", "$exchangeRate") //добавить onClick
+        HomeAdapter { currency, isPressed ->
+            Log.d("test", "$currency") //добавить onClick
+            viewModel.onFavClick(currency, isPressed)
         }
     }
 
@@ -63,10 +64,9 @@ class HomeFragment : BaseFragment() {
                 adapter.exchangeRates = uiState.rates
                 sort = uiState.sort
                 textViewSort.text = getString(sort.titleRes)
-
             }
-            viewModel.favCurrencies.collect{
-
+            viewModel.favCurrenciesMutableStateFlow.collect{ favCurrencies ->
+                adapter.favRates = favCurrencies
             }
         }
     }

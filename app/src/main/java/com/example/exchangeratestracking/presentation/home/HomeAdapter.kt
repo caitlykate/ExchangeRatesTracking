@@ -2,17 +2,19 @@ package com.example.exchangeratestracking.presentation.home
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.exchangeratestracking.databinding.ItemExchangeRateBinding
 import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import kotlinx.android.synthetic.main.item_exchange_rate.view.*
 
-class HomeAdapter(private val onItemClick: (exchangeRate: ExchangeRate) -> Unit,
+class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) -> Unit,
 ) : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
 
     var exchangeRates: List<ExchangeRate> = emptyList()
-        var favRates: List<String> = emptyList()
+    var favRates: List<String> = emptyList()
+
     @SuppressLint("NotifyDataSetChanged")
     set(newExchangeRateList) {
         field = newExchangeRateList
@@ -31,6 +33,19 @@ class HomeAdapter(private val onItemClick: (exchangeRate: ExchangeRate) -> Unit,
         return exchangeRates.size
     }
 
+
+    private fun changeFavImg(ad: Ad){
+        if (changeFavImg) {
+            fav_iv.setImageResource(R.drawable.ic_fav_pressed)
+        } else {
+            fav_iv.setImageResource(R.drawable.ic_fav_normal)
+        }
+    }
+
+    private fun isFav(currency: String): Boolean{
+        return currency in favRates
+    }
+
     inner class HomeHolder(
         parent: ViewGroup,
         private val binding: ItemExchangeRateBinding = ItemExchangeRateBinding.inflate(
@@ -43,8 +58,8 @@ class HomeAdapter(private val onItemClick: (exchangeRate: ExchangeRate) -> Unit,
         private lateinit var exchangeRate: ExchangeRate
 
         init {
-            itemView.fav_iv.setOnClickListener {
-                this@HomeAdapter.onItemClick(exchangeRate)
+            itemView.fav_iv.setOnClickListener { view ->
+                this@HomeAdapter.onItemClick(exchangeRate.currency, isFav(exchangeRate.currency))
             }
         }
 
@@ -53,7 +68,7 @@ class HomeAdapter(private val onItemClick: (exchangeRate: ExchangeRate) -> Unit,
 
             currencyTv.text = exchangeRate.currency
             valueTv.text = exchangeRate.value.toString()
-            //favIv
+//            favIv.
         }
     }
 
