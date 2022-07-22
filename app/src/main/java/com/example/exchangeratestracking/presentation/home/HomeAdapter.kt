@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.databinding.ItemExchangeRateBinding
 import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import kotlinx.android.synthetic.main.item_exchange_rate.view.*
@@ -33,12 +35,11 @@ class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) ->
         return exchangeRates.size
     }
 
-
-    private fun changeFavImg(ad: Ad){
-        if (changeFavImg) {
-            fav_iv.setImageResource(R.drawable.ic_fav_pressed)
+    private fun changeFavImg(view: ImageView, isFav: Boolean){
+        if (isFav) {
+            view.setImageResource(R.drawable.ic_star_border)
         } else {
-            fav_iv.setImageResource(R.drawable.ic_fav_normal)
+            view.setImageResource(R.drawable.ic_star)
         }
     }
 
@@ -59,7 +60,10 @@ class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) ->
 
         init {
             itemView.fav_iv.setOnClickListener { view ->
-                this@HomeAdapter.onItemClick(exchangeRate.currency, isFav(exchangeRate.currency))
+                val currencyIsFav = isFav(exchangeRate.currency)
+                changeFavImg(view.fav_iv, currencyIsFav)
+                this@HomeAdapter.onItemClick(exchangeRate.currency, currencyIsFav)
+
             }
         }
 
@@ -68,7 +72,12 @@ class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) ->
 
             currencyTv.text = exchangeRate.currency
             valueTv.text = exchangeRate.value.toString()
-//            favIv.
+            changeFavImg(favIv, isFav(exchangeRate.currency))
+            if (!isFav(exchangeRate.currency)) {
+                favIv.setImageResource(R.drawable.ic_star_border)
+            } else {
+                favIv.setImageResource(R.drawable.ic_star)
+            }
         }
     }
 

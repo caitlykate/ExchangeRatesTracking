@@ -37,8 +37,8 @@ class FavouriteFragment : BaseFragment() {
     }
 
     private val adapter by lazy {
-        HomeAdapter { exchangeRate ->
-            Log.d("test", "$exchangeRate") //добавить onClick
+        HomeAdapter { exchangeRate, isFav ->
+//            Log.d("test", "$exchangeRate") //добавить onClick
         }
     }
 

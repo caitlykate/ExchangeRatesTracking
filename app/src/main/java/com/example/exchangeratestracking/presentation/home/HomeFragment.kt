@@ -1,6 +1,5 @@
 package com.example.exchangeratestracking.presentation.home
 
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.core.os.bundleOf
@@ -37,7 +36,6 @@ class HomeFragment : BaseFragment() {
 
     private val adapter by lazy {
         HomeAdapter { currency, isPressed ->
-            Log.d("test", "$currency") //добавить onClick
             viewModel.onFavClick(currency, isPressed)
         }
     }
@@ -65,7 +63,9 @@ class HomeFragment : BaseFragment() {
                 sort = uiState.sort
                 textViewSort.text = getString(sort.titleRes)
             }
-            viewModel.favCurrenciesMutableStateFlow.collect{ favCurrencies ->
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.favCurrenciesStateFlow.collect{ favCurrencies ->
                 adapter.favRates = favCurrencies
             }
         }

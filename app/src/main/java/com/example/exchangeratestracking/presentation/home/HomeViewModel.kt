@@ -2,25 +2,23 @@ package com.example.exchangeratestracking.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.exchangeratestracking.data.local.db.MainDataBase
-import com.example.exchangeratestracking.domain.interactor.DeleteFavCurrencyInteractor
-import com.example.exchangeratestracking.domain.interactor.GetCurrentRatesInteractor
-import com.example.exchangeratestracking.domain.interactor.GetFavCurrenciesInteractor
-import com.example.exchangeratestracking.domain.interactor.InsertFavCurrencyInteractor
+import com.example.exchangeratestracking.domain.usecase.DeleteFavCurrencyUseCase
+import com.example.exchangeratestracking.domain.usecase.rates.GetCurrentRatesUseCase
+import com.example.exchangeratestracking.domain.usecase.GetFavCurrenciesUseCase
+import com.example.exchangeratestracking.domain.usecase.InsertFavCurrencyUseCase
 import com.example.exchangeratestracking.presentation.entity.*
 import com.example.exchangeratestracking.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
-    private val getCurrentRatesInteractor: GetCurrentRatesInteractor,
-    private val getFavCurrenciesInteractor: GetFavCurrenciesInteractor,
-    private val insertFavCurrencyInteractor: InsertFavCurrencyInteractor,
-    private val deleteFavCurrencyInteractor: DeleteFavCurrencyInteractor,
+    private val getCurrentRatesUseCase: GetCurrentRatesUseCase,
+    private val getFavCurrenciesUseCase: GetFavCurrenciesUseCase,
+    private val insertFavCurrencyUseCase: InsertFavCurrencyUseCase,
+    private val deleteFavCurrencyUseCase: DeleteFavCurrencyUseCase,
 ) : ViewModel() {
 
     private val exchangeRatesStateMutableStateFlow = MutableStateFlow(
@@ -50,11 +48,16 @@ class HomeViewModel @Inject constructor(
             )
         }
     }
-    val favCurrenciesMutableStateFlow  = getFavCurrenciesInteractor.get()
-        .stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, emptyList())
+
+    private val favCurrenciesMutableStateFlow : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    val favCurrenciesStateFlow: StateFlow<List<String>> = favCurrenciesMutableStateFlow
+
+//    val favCurrenciesMutableStateFlow  = getFavCurrenciesUseCase.execute()
+//        .stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(5000L), listOf("123","456"))
 
     init {
         fetchRates(currency = exchangeRatesStateMutableStateFlow.value.currency)
+        fetchFavCurrencies()
     }
 
     private fun fetchRates(currency: String) {
@@ -64,7 +67,7 @@ class HomeViewModel @Inject constructor(
         )
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val newRates = getCurrentRatesInteractor.getCurrentRates(base = currency)
+                val newRates = getCurrentRatesUseCase.execute(base = currency)
 
                 exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
                     rates = newRates,
@@ -82,33 +85,21 @@ class HomeViewModel @Inject constructor(
     fun onFavClick(currency: String, isPressed: Boolean){
         viewModelScope.launch(Dispatchers.IO) {
             if (isPressed) {
-                deleteFavCurrencyInteractor.delete(currency)
+                deleteFavCurrencyUseCase.execute(currency)
             } else {
-                insertFavCurrencyInteractor.insert(currency)
+                insertFavCurrencyUseCase.execute(currency)
+            }
+        }
+        fetchFavCurrencies()
+    }
+
+    private fun fetchFavCurrencies(){
+        viewModelScope.launch(Dispatchers.IO) {
+            getFavCurrenciesUseCase.execute().collect{ favCurrencies ->
+                favCurrenciesMutableStateFlow.value = favCurrencies
             }
         }
     }
-//
-//    private fun fetchFavCurrencies(){
-//        exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-//            loadingState = LoadingState.Loading,
-//        )
-//        viewModelScope.launch(Dispatchers.IO) {
-//            try {
-//                val favCurrecies = dataBase.getFavouriteCurrenciesDao().getAllFavCurrencies()
-//
-//                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-//                    rates = newRates,
-//                    loadingState = LoadingState.Success,
-//                )
-//
-//            } catch (ex: Exception) {
-//                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-//                    loadingState = LoadingState.Error,
-//                )
-//            }
-//        }
-//    }
 
     fun onRefresh() {
         fetchRates(currency = exchangeRatesStateMutableStateFlow.value.currency)
