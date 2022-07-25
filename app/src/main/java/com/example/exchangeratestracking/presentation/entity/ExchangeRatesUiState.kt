@@ -3,18 +3,6 @@ package com.example.exchangeratestracking.presentation.entity
 import androidx.annotation.StringRes
 import com.example.exchangeratestracking.R
 
-//sealed class ExchangeRatesUiState {
-//    object Empty : ExchangeRatesUiState()
-//    object Loading : ExchangeRatesUiState()
-//    class Loaded(val data: List<ExchangeRate>) : ExchangeRatesUiState()
-//    object Error : ExchangeRatesUiState()
-//}
-
-//class SortPanelState(
-//    val requestCurrency: String,
-//    val chosenSort: Int
-//)
-
 sealed class LoadingState {
     object Loading: LoadingState()
     object Error: LoadingState()
@@ -81,9 +69,3 @@ val listOfCurrencies = listOf(
         "ZAR",
         "ZWL"
     )
-
-//
-//enum class Sort {
-//    A, B, C
-//}
-

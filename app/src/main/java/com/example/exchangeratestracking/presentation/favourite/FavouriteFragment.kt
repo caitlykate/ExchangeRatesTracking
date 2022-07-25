@@ -1,8 +1,8 @@
 package com.example.exchangeratestracking.presentation.favourite
 
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -10,13 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
-import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
+import com.example.exchangeratestracking.di.component.DaggerFavouriteScreenComponent
 import com.example.exchangeratestracking.presentation.BaseFragment
 import com.example.exchangeratestracking.presentation.SpinnerAdapter
 import com.example.exchangeratestracking.presentation.entity.SortType
 import com.example.exchangeratestracking.presentation.entity.listOfCurrencies
 import com.example.exchangeratestracking.presentation.home.HomeAdapter
-import com.example.exchangeratestracking.presentation.home.HomeViewModel
 import com.example.exchangeratestracking.presentation.sort.SortFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -27,22 +26,25 @@ class FavouriteFragment : BaseFragment() {
     lateinit var sort: SortType
 
     private val component by lazy {
-        DaggerHomeScreenComponent.builder()
+        DaggerFavouriteScreenComponent.builder()
             .service(activity?.appComponent!!.apiService())
+            .db(activity?.appComponent!!.db())
             .build()
     }
 
-    private val viewModel by viewModels<HomeViewModel> {
+    private val viewModel by viewModels<FavouriteViewModel> {
         component.viewModelFactory()
     }
 
     private val adapter by lazy {
-        HomeAdapter { exchangeRate, isFav ->
-//            Log.d("test", "$exchangeRate") //добавить onClick
+        HomeAdapter { currency, isPressed ->
+            viewModel.onFavClick(currency, isPressed)
         }
     }
 
-    private val spinnerAdapter = SpinnerAdapter(listOfCurrencies)
+    private val spinnerAdapter by lazy {
+        SpinnerAdapter(viewModel.favCurrenciesStateFlow.value)
+    }
 
     override fun onSetupLayout() {
         recyclerViewContent.adapter = adapter
@@ -67,6 +69,12 @@ class FavouriteFragment : BaseFragment() {
 
             }
         }
+        lifecycleScope.launchWhenStarted {
+            viewModel.favCurrenciesStateFlow.collect{ favCurrencies ->
+                adapter.favRates = favCurrencies
+                spinnerAdapter.newItems = favCurrencies
+            }
+        }
     }
 
     override fun setOnClicks() {
@@ -77,7 +85,7 @@ class FavouriteFragment : BaseFragment() {
                 position: Int,
                 id: Long
             ) {
-                viewModel.onNewCurrencyClick(listOfCurrencies[position])
+                viewModel.onNewCurrencyClick( currency = spinnerAdapter.newItems[position]) //мб лучше брать из состояния во viewModel
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -14,6 +14,6 @@ interface FavouriteCurrenciesDao {
     @Query(value = "SELECT * FROM favourite_currencies")
     fun getAllFavCurrencies(): Flow<List<FavouriteCurrencyEntity?>>
 
-    @Update
+    @Delete
     suspend fun deleteFavCurrency(favCurrency: FavouriteCurrencyEntity)
 }

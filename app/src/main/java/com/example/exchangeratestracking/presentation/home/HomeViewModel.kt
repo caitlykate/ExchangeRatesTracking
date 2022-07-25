@@ -1,5 +1,6 @@
 package com.example.exchangeratestracking.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeratestracking.domain.usecase.DeleteFavCurrencyUseCase
@@ -52,9 +53,6 @@ class HomeViewModel @Inject constructor(
     private val favCurrenciesMutableStateFlow : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val favCurrenciesStateFlow: StateFlow<List<String>> = favCurrenciesMutableStateFlow
 
-//    val favCurrenciesMutableStateFlow  = getFavCurrenciesUseCase.execute()
-//        .stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(5000L), listOf("123","456"))
-
     init {
         fetchRates(currency = exchangeRatesStateMutableStateFlow.value.currency)
         fetchFavCurrencies()
@@ -84,13 +82,19 @@ class HomeViewModel @Inject constructor(
 
     fun onFavClick(currency: String, isPressed: Boolean){
         viewModelScope.launch(Dispatchers.IO) {
-            if (isPressed) {
-                deleteFavCurrencyUseCase.execute(currency)
-            } else {
-                insertFavCurrencyUseCase.execute(currency)
+            try {
+                if (isPressed) {
+                    deleteFavCurrencyUseCase.execute(currency)
+                } else {
+                    insertFavCurrencyUseCase.execute(currency)
+                }
             }
+            catch (ex: Exception) {
+                ex.message?.let { Log.e("error", it) }
+                //TODO вывод ошибки
+            }
+            fetchFavCurrencies()
         }
-        fetchFavCurrencies()
     }
 
     private fun fetchFavCurrencies(){

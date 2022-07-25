@@ -1,17 +1,152 @@
 package com.example.exchangeratestracking.presentation.favourite
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.exchangeratestracking.domain.usecase.DeleteFavCurrencyUseCase
+import com.example.exchangeratestracking.domain.usecase.GetFavCurrenciesUseCase
+import com.example.exchangeratestracking.domain.usecase.InsertFavCurrencyUseCase
 import com.example.exchangeratestracking.domain.usecase.rates.GetCurrentRatesUseCase
+import com.example.exchangeratestracking.presentation.entity.ExchangeRate
+import com.example.exchangeratestracking.presentation.entity.ExchangeRatesState
+import com.example.exchangeratestracking.presentation.entity.ExchangeRatesUiState
+import com.example.exchangeratestracking.presentation.entity.LoadingState
+import com.example.exchangeratestracking.presentation.entity.SortType
+import com.example.exchangeratestracking.presentation.entity.listOfCurrencies
+import com.example.exchangeratestracking.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class FavouriteViewModel@Inject constructor(
-    private val getCurrentRatesUseCase: GetCurrentRatesUseCase
+class FavouriteViewModel @Inject constructor(
+    private val getCurrentRatesUseCase: GetCurrentRatesUseCase,
+    private val getFavCurrenciesUseCase: GetFavCurrenciesUseCase,
+    private val insertFavCurrencyUseCase: InsertFavCurrencyUseCase,
+    private val deleteFavCurrencyUseCase: DeleteFavCurrencyUseCase,
 ) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is favourite rates Fragment"
+    private lateinit var job : Job
+
+    private val favCurrenciesMutableStateFlow : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    val favCurrenciesStateFlow: StateFlow<List<String>> = favCurrenciesMutableStateFlow
+
+    private val exchangeRatesStateMutableStateFlow = MutableStateFlow(
+        ExchangeRatesState(
+            rates = emptyList(),
+            loadingState = LoadingState.Success,
+            sort = SortType.AZ,
+            currency = listOfCurrencies.first(),    //favCurrenciesMutableStateFlow.value.first()
+        )
+    )
+    val uiState: Flow<ExchangeRatesUiState> = exchangeRatesStateMutableStateFlow.map { state ->
+        with(state) {
+            val sortedRates = when (loadingState) {
+                is LoadingState.Success -> sortedRates(
+                    rates = rates,
+                    sortType = sort,
+                )
+                else -> emptyList()
+            }
+
+            ExchangeRatesUiState(
+                rates = sortedRates,
+                isLoaderVisible = loadingState is LoadingState.Loading,
+                hasError = loadingState is LoadingState.Error,
+                sort = sort,
+                currency = currency,
+            )
+        }
     }
-    val text: LiveData<String> = _text
+
+    init {
+        fetchFavCurrencies()
+        //job.??
+        fetchRates(currency = favCurrenciesMutableStateFlow.value.first())
+    }
+
+    private fun fetchRates(currency: String) {
+        exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
+            currency = currency,
+            loadingState = LoadingState.Loading,
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val newRates = getCurrentRatesUseCase.execute(base = currency).filter { it.currency in favCurrenciesMutableStateFlow.value }
+
+                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
+                    rates = newRates,
+                    loadingState = LoadingState.Success,
+                )
+
+            } catch (ex: Exception) {
+                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
+                    loadingState = LoadingState.Error,
+                )
+            }
+        }
+    }
+
+    fun onFavClick(currency: String, isPressed: Boolean){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (isPressed) {
+                    deleteFavCurrencyUseCase.execute(currency)
+                } else {
+                    insertFavCurrencyUseCase.execute(currency)
+                }
+            }
+            catch (ex: Exception) {
+                ex.message?.let { Log.e("error", it) }
+                //TODO вывод ошибки
+            }
+            fetchFavCurrencies()
+        }
+    }
+
+    private fun fetchFavCurrencies(){
+        job = viewModelScope.launch(Dispatchers.IO) {
+            getFavCurrenciesUseCase.execute().collect{ favCurrencies ->
+                favCurrenciesMutableStateFlow.value = favCurrencies
+            }
+        }
+    }
+
+    fun onRefresh() {
+        fetchRates(currency = exchangeRatesStateMutableStateFlow.value.currency)
+    }
+
+    fun onNewCurrencyClick(currency: String) {
+        fetchRates(currency = currency)
+    }
+
+    fun onNewSortClick(sortType: SortType) {
+        exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
+            sort = sortType,
+        )
+    }
+
+    private suspend fun sortedRates(
+        rates: List<ExchangeRate>,
+        sortType: SortType,
+    ): List<ExchangeRate> {
+
+        val sortedList = viewModelScope.async(Dispatchers.Default) { rates.sortedWith(
+            when (sortType) {
+                SortType.AZ -> Utils.ExchangeRateAZComparator
+                SortType.ZA -> Utils.ExchangeRateZAComparator
+                SortType.ASC -> Utils.ExchangeRateAscComparator
+                SortType.DESC -> Utils.ExchangeRateDescComparator
+            }
+        ) }
+
+        return sortedList.await()
+    }
 }

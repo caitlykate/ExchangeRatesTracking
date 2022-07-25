@@ -8,8 +8,15 @@ import android.widget.BaseAdapter
 import com.example.exchangeratestracking.databinding.ItemSpinnerBinding
 
 class SpinnerAdapter(
-    private val items: List<String>
+    private var items: List<String>
 ): BaseAdapter()  {
+
+    var newItems: List<String> = emptyList()
+        set(value) {
+            items = value
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun getCount(): Int {
         return items.size
@@ -35,4 +42,5 @@ class SpinnerAdapter(
         binding.root.tag = binding
         return binding
     }
+
 }
