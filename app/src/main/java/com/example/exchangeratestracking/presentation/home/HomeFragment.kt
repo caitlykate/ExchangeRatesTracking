@@ -15,11 +15,11 @@ import com.example.exchangeratestracking.presentation.SpinnerAdapter
 import com.example.exchangeratestracking.presentation.entity.SortType
 import com.example.exchangeratestracking.presentation.entity.listOfCurrencies
 import com.example.exchangeratestracking.presentation.sort.SortFragment
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_base.*
 
 class HomeFragment : BaseFragment() {
 
-    override val layout: Int = R.layout.fragment_home
+    override val layout: Int = R.layout.fragment_base
 
     lateinit var sort: SortType
 
@@ -82,8 +82,7 @@ class HomeFragment : BaseFragment() {
                 viewModel.onNewCurrencyClick(listOfCurrencies[position])
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
         textViewSort.setOnClickListener {
             openSortFrag()

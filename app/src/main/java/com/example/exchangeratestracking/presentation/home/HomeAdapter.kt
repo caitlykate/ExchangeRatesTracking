@@ -14,9 +14,14 @@ import kotlinx.android.synthetic.main.item_exchange_rate.view.*
 class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) -> Unit,
 ) : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
 
-    var exchangeRates: List<ExchangeRate> = emptyList()
-    var favRates: List<String> = emptyList()
 
+    var favRates: List<String> = emptyList()
+        set(newExchangeRateList) {
+            field = newExchangeRateList
+            notifyDataSetChanged()
+        }
+
+    var exchangeRates: List<ExchangeRate> = emptyList()
     @SuppressLint("NotifyDataSetChanged")
     set(newExchangeRateList) {
         field = newExchangeRateList

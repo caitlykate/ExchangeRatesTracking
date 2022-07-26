@@ -7,7 +7,7 @@ import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import javax.inject.Inject
 
 class GetCurrentRatesUseCase @Inject constructor(
-    val apiService: ExchangeRatesApiService,
+    private val apiService: ExchangeRatesApiService,
     val mapper: CurrentRateResponseToMapExchangeRateMapper
 ) {
 

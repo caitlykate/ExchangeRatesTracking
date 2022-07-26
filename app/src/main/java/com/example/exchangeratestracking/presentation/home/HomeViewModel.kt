@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeratestracking.domain.usecase.DeleteFavCurrencyUseCase
 import com.example.exchangeratestracking.domain.usecase.rates.GetCurrentRatesUseCase
-import com.example.exchangeratestracking.domain.usecase.GetFavCurrenciesUseCase
+import com.example.exchangeratestracking.domain.usecase.favourite.GetFavCurrenciesUseCase
 import com.example.exchangeratestracking.domain.usecase.InsertFavCurrencyUseCase
 import com.example.exchangeratestracking.presentation.entity.*
 import com.example.exchangeratestracking.utils.Utils
@@ -50,7 +50,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val favCurrenciesMutableStateFlow : MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    private val favCurrenciesMutableStateFlow: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val favCurrenciesStateFlow: StateFlow<List<String>> = favCurrenciesMutableStateFlow
 
     init {
@@ -80,7 +80,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onFavClick(currency: String, isPressed: Boolean){
+    fun onFavClick(currency: String, isPressed: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (isPressed) {
@@ -88,8 +88,7 @@ class HomeViewModel @Inject constructor(
                 } else {
                     insertFavCurrencyUseCase.execute(currency)
                 }
-            }
-            catch (ex: Exception) {
+            } catch (ex: Exception) {
                 ex.message?.let { Log.e("error", it) }
                 //TODO вывод ошибки
             }
@@ -97,9 +96,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun fetchFavCurrencies(){
+    private fun fetchFavCurrencies() {
         viewModelScope.launch(Dispatchers.IO) {
-            getFavCurrenciesUseCase.execute().collect{ favCurrencies ->
+            getFavCurrenciesUseCase.execute().collect { favCurrencies ->
                 favCurrenciesMutableStateFlow.value = favCurrencies
             }
         }
@@ -110,7 +109,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onNewCurrencyClick(currencyName: String) {
-        fetchRates(currency = currencyName)
+        if (currencyName != exchangeRatesStateMutableStateFlow.value.currency) {
+            fetchRates(currency = currencyName)
+        }
     }
 
     fun onNewSortClick(sortType: SortType) {
@@ -124,14 +125,16 @@ class HomeViewModel @Inject constructor(
         sortType: SortType,
     ): List<ExchangeRate> {
 
-        val sortedList = viewModelScope.async(Dispatchers.Default) { rates.sortedWith(
-            when (sortType) {
-                SortType.AZ -> Utils.ExchangeRateAZComparator
-                SortType.ZA -> Utils.ExchangeRateZAComparator
-                SortType.ASC -> Utils.ExchangeRateAscComparator
-                SortType.DESC -> Utils.ExchangeRateDescComparator
-            }
-        ) }
+        val sortedList = viewModelScope.async(Dispatchers.Default) {
+            rates.sortedWith(
+                when (sortType) {
+                    SortType.AZ -> Utils.ExchangeRateAZComparator
+                    SortType.ZA -> Utils.ExchangeRateZAComparator
+                    SortType.ASC -> Utils.ExchangeRateAscComparator
+                    SortType.DESC -> Utils.ExchangeRateDescComparator
+                }
+            )
+        }
 
         return sortedList.await()
     }

@@ -1,4 +1,4 @@
-package com.example.exchangeratestracking.domain.usecase
+package com.example.exchangeratestracking.domain.usecase.favourite
 
 import com.example.exchangeratestracking.data.local.db.MainDataBase
 import kotlinx.coroutines.flow.Flow

@@ -2,7 +2,6 @@ package com.example.exchangeratestracking.presentation.favourite
 
 import android.view.View
 import android.widget.AdapterView
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -14,14 +13,13 @@ import com.example.exchangeratestracking.di.component.DaggerFavouriteScreenCompo
 import com.example.exchangeratestracking.presentation.BaseFragment
 import com.example.exchangeratestracking.presentation.SpinnerAdapter
 import com.example.exchangeratestracking.presentation.entity.SortType
-import com.example.exchangeratestracking.presentation.entity.listOfCurrencies
 import com.example.exchangeratestracking.presentation.home.HomeAdapter
 import com.example.exchangeratestracking.presentation.sort.SortFragment
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_base.*
 
 class FavouriteFragment : BaseFragment() {
 
-    override val layout: Int = R.layout.fragment_home
+    override val layout: Int = R.layout.fragment_base
 
     lateinit var sort: SortType
 
@@ -45,6 +43,8 @@ class FavouriteFragment : BaseFragment() {
     private val spinnerAdapter by lazy {
         SpinnerAdapter(viewModel.favCurrenciesStateFlow.value)
     }
+//
+//    private  lateinit var spinnerAdapter : SpinnerAdapter
 
     override fun onSetupLayout() {
         recyclerViewContent.adapter = adapter
@@ -70,7 +70,7 @@ class FavouriteFragment : BaseFragment() {
             }
         }
         lifecycleScope.launchWhenStarted {
-            viewModel.favCurrenciesStateFlow.collect{ favCurrencies ->
+            viewModel.favCurrenciesStateFlow.collect { favCurrencies ->
                 adapter.favRates = favCurrencies
                 spinnerAdapter.newItems = favCurrencies
             }
@@ -85,7 +85,7 @@ class FavouriteFragment : BaseFragment() {
                 position: Int,
                 id: Long
             ) {
-                viewModel.onNewCurrencyClick( currency = spinnerAdapter.newItems[position]) //мб лучше брать из состояния во viewModel
+                viewModel.onNewCurrencyClick(currency = spinnerCurrency.adapter.getItem(position).toString()) //мб лучше брать из состояния во viewModel
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -107,7 +107,7 @@ class FavouriteFragment : BaseFragment() {
     private fun openSortFrag() {
 
         findNavController().navigate(
-            R.id.action_navigation_home_to_sortFragment,
+            R.id.action_navigation_favourite_to_sortFragment,
             bundleOf(SortFragment.SORT_TYPE to sort)
         )
     }
