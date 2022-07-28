@@ -31,7 +31,7 @@ class FavouriteViewModel @Inject constructor(
 
     private val exchangeRatesStateMutableStateFlow = MutableStateFlow(
         ExchangeRatesState(
-            rates = emptyList(),
+            rates = mutableListOf(),
             loadingState = LoadingState.Success,
             sort = SortType.AZ,
             currency = "" //favCurrenciesMutableStateFlow.value.first() //listOfCurrencies.first(),
@@ -44,7 +44,7 @@ class FavouriteViewModel @Inject constructor(
                     rates = rates,
                     sortType = sort,
                 )
-                else -> emptyList()
+                else -> mutableListOf()
             }
 
             ExchangeRatesUiState(
@@ -94,18 +94,27 @@ class FavouriteViewModel @Inject constructor(
     }
 
     fun onFavClick(currency: String, isPressed: Boolean) {
+        var setNewRate = false
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                if (isPressed) {
-                    deleteFavCurrencyUseCase.execute(currency)
-                } else {
-                    insertFavCurrencyUseCase.execute(currency)
+
+                deleteFavCurrencyUseCase.execute(currency)
+                if (currency == exchangeRatesStateMutableStateFlow.value.currency) {
+                    setNewRate = true
                 }
+                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
+                    rates = exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency!=currency }
+                )
+//                exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency!=currency }
+                favCurrenciesMutableStateFlow.value.filter { cur -> cur!=currency }
             } catch (ex: Exception) {
                 ex.message?.let { Log.e("error", it) }
-                //TODO вывод ошибки
+                //TODO вывод ошибки в тосте
             }
-            fetchFavCurrencies()
+            if (setNewRate) {
+                fetchRates(exchangeRatesStateMutableStateFlow.value.currency)
+            }
+
         }
     }
 //
@@ -120,7 +129,7 @@ class FavouriteViewModel @Inject constructor(
 
     private suspend fun fetchFavCurrencies() {
             getFavCurrenciesUseCase.execute().collect { favCurrencies ->
-                favCurrenciesMutableStateFlow.value = favCurrencies
+                favCurrenciesMutableStateFlow.value = favCurrencies.sorted()
         }
     }
 
@@ -129,6 +138,7 @@ class FavouriteViewModel @Inject constructor(
     }
 
     fun onNewCurrencyClick(currency: String) {
+        exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(currency = currency)
         fetchRates(currency = currency)
     }
 

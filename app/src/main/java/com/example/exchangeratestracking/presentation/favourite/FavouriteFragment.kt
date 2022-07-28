@@ -91,6 +91,7 @@ class FavouriteFragment : BaseFragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
+//        spinnerCurrency.
         textViewSort.setOnClickListener {
             openSortFrag()
         }
