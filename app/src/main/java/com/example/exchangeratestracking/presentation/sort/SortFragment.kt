@@ -19,7 +19,7 @@ class SortFragment : Fragment(){
         const val SORT_TYPE = "sort_type"
     }
 
-    private lateinit var viewModel: SortViewModel
+//    private lateinit var viewModel: SortViewModel
 
     private val valuesAdapter by lazy {
         SortValuesAdapter(
@@ -45,7 +45,7 @@ class SortFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerViewFilter.apply {
+        recycler_vew_sort.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = valuesAdapter
         }
@@ -54,7 +54,7 @@ class SortFragment : Fragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this)[SortViewModel::class.java]
+//        viewModel = ViewModelProvider(this)[SortViewModel::class.java]
     }
 
 

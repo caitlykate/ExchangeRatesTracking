@@ -80,10 +80,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onFavClick(currency: String, isPressed: Boolean) {
+    fun onFavClick(
+        currency: String,
+//                   isPressed: Boolean
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                if (isPressed) {
+                if (currency in favCurrenciesMutableStateFlow.value) {
                     deleteFavCurrencyUseCase.execute(currency)
                 } else {
                     insertFavCurrencyUseCase.execute(currency)

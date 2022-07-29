@@ -8,7 +8,7 @@
     tools:context=".presentation.BaseFragment">
 
     <LinearLayout
-        android:id="@+id/layoutSort"
+        android:id="@+id/layout_sort"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal|top"
@@ -19,7 +19,7 @@
         android:orientation="horizontal">
 
         <Spinner
-            android:id="@+id/spinnerCurrency"
+            android:id="@+id/spinner_currency"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:focusable="true"
@@ -39,7 +39,7 @@
             android:background="@color/blue_zodiac" />
 
         <TextView
-            android:id="@+id/textViewSort"
+            android:id="@+id/text_view_sort"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:clickable="true"
@@ -56,19 +56,19 @@
 
 
     <FrameLayout
-        android:id="@+id/frame"
+        android:id="@+id/frame_layout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"
         android:layout_gravity="center_horizontal">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/ratesSwipeRefreshLayout"
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewContent"
+                android:id="@+id/recycler_view_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -81,7 +81,7 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -92,7 +92,7 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/noFavTextView"
+            android:id="@+id/text_view_no_fav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -100,7 +100,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/emptyTV"
+            android:id="@+id/text_view_empty_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -108,7 +108,7 @@
             tools:text="@string/no_data_available" />
 
         <LinearLayout
-            android:id="@+id/errorLayout"
+            android:id="@+id/layout_error"
             android:layout_width="match_parent"
             android:layout_height="524dp"
             android:gravity="center"
@@ -117,13 +117,13 @@
             tools:visibility="visible">
 
             <TextView
-                android:id="@+id/errorTV"
+                android:id="@+id/text_view_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/something_went_wrong" />
 
             <Button
-                android:id="@+id/errorBtn"
+                android:id="@+id/button_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/blue_zodiac"

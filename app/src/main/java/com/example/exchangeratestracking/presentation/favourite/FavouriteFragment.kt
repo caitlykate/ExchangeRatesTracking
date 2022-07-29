@@ -13,10 +13,9 @@ import com.example.exchangeratestracking.di.component.DaggerFavouriteScreenCompo
 import com.example.exchangeratestracking.presentation.BaseFragment
 import com.example.exchangeratestracking.presentation.SpinnerAdapter
 import com.example.exchangeratestracking.presentation.entity.SortType
-import com.example.exchangeratestracking.presentation.home.HomeAdapter
+import com.example.exchangeratestracking.presentation.ExchangeRatesAdapter
 import com.example.exchangeratestracking.presentation.sort.SortFragment
 import kotlinx.android.synthetic.main.fragment_base.*
-import kotlinx.coroutines.flow.first
 
 class FavouriteFragment : BaseFragment() {
 
@@ -36,10 +35,14 @@ class FavouriteFragment : BaseFragment() {
     }
 
     private val adapter by lazy {
-        HomeAdapter { currency, isPressed ->
-            viewModel.onFavClick(currency, isPressed)
+        ExchangeRatesAdapter { currency
+//                      , isPressed
+            ->
+            viewModel.onFavClick(currency
+//                , isPressed
+            )
             {
-                spinnerCurrency.getSelectedItem().toString()
+                spinner_currency.getSelectedItem().toString()
             }
         }
     }
@@ -51,8 +54,8 @@ class FavouriteFragment : BaseFragment() {
 //    private  lateinit var spinnerAdapter : SpinnerAdapter
 
     override fun onSetupLayout() {
-        recyclerViewContent.adapter = adapter
-        spinnerCurrency.adapter = spinnerAdapter
+        recycler_view_content.adapter = adapter
+        spinner_currency.adapter = spinnerAdapter
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(SortFragment.SORT_TYPE)
             ?.observe(viewLifecycleOwner) { sortType ->
@@ -63,20 +66,20 @@ class FavouriteFragment : BaseFragment() {
     override fun onCollectFlow() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.collect { uiState ->
-                recyclerViewContent.isVisible = !uiState.rates.isEmpty()
-                emptyTV.isVisible = uiState.rates.isEmpty()
-                progressBar.isVisible = uiState.isLoaderVisible
-                errorLayout.isVisible = uiState.hasError
+                recycler_view_content.isVisible = !uiState.rates.isEmpty()
+                text_view_empty_list.isVisible = uiState.rates.isEmpty()
+                progress_bar.isVisible = uiState.isLoaderVisible
+                layout_error.isVisible = uiState.hasError
                 adapter.exchangeRates = uiState.rates
                 sort = uiState.sort
-                textViewSort.text = getString(sort.titleRes)
+                text_view_sort.text = getString(sort.titleRes)
 
             }
         }
         lifecycleScope.launchWhenStarted {
             viewModel.favCurrenciesStateFlow.collect { favCurrencies ->
-                noFavTextView.isVisible = favCurrencies.isEmpty()
-                layoutSort.isVisible = favCurrencies.isNotEmpty()
+                text_view_no_fav.isVisible = favCurrencies.isEmpty()
+                layout_sort.isVisible = favCurrencies.isNotEmpty()
                 adapter.favRates = favCurrencies
                 spinnerAdapter.newItems = favCurrencies
             }
@@ -84,27 +87,27 @@ class FavouriteFragment : BaseFragment() {
     }
 
     override fun setOnClicks() {
-        spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinner_currency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
                 position: Int,
                 id: Long
             ) {
-                viewModel.onNewCurrencyClick(currency = spinnerCurrency.adapter.getItem(position).toString()) //мб лучше брать из состояния во viewModel
+                viewModel.onNewCurrencyClick(currency = spinner_currency.adapter.getItem(position).toString()) //мб лучше брать из состояния во viewModel
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-        textViewSort.setOnClickListener {
+        text_view_sort.setOnClickListener {
             openSortFrag()
         }
-        errorBtn.setOnClickListener {
+        button_error.setOnClickListener {
             viewModel.onRefresh()
         }
-        ratesSwipeRefreshLayout.setOnRefreshListener {
-            ratesSwipeRefreshLayout.isRefreshing = false
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = false
             viewModel.onRefresh()
         }
     }

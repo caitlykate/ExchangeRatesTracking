@@ -31,7 +31,7 @@ class FavouriteViewModel @Inject constructor(
             rates = mutableListOf(),
             loadingState = LoadingState.Success,
             sort = SortType.AZ,
-            currency = ""
+            currency = "",
         )
     )
     val uiState: Flow<ExchangeRatesUiState> = exchangeRatesStateMutableStateFlow.map { state ->
@@ -90,27 +90,24 @@ class FavouriteViewModel @Inject constructor(
         }
     }
 
-    fun onFavClick(currency: String, isPressed: Boolean
-                   , spinnerSelectedItem: () -> String
-    ) {
+    fun onFavClick(currency: String, spinnerSelectedItem: () -> String) {
         var setNewRate = false
         viewModelScope.launch(Dispatchers.IO) {
             try {
-
-                deleteFavCurrencyUseCase.execute(currency)
+                deleteFavCurrencyUseCase.execute(currency = currency)
                 if (currency == exchangeRatesStateMutableStateFlow.value.currency) {
                     setNewRate = true
                 }
                 exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-                    rates = exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency != currency },
+                    rates = exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency != currency }
                 )
                 favCurrenciesMutableStateFlow.value.filter { cur -> cur != currency }
             } catch (ex: Exception) {
                 //TODO вывод ошибки в тосте
             }
             if (setNewRate && exchangeRatesStateMutableStateFlow.value.rates.isNotEmpty()) {
-                Thread.sleep(30)    //костыль (потому что спиннер сам меняет валюту в главном потоке без вызова onItemSelectedListener)
-                fetchRates(spinnerSelectedItem())
+                Thread.sleep(30)    //костыль (потому что спиннер сам меняет валюту в главном потоке без вызова onItemSelectedListener, в идеале мы должны сами это устанавливать из фрагмента)
+                fetchRates(currency = spinnerSelectedItem())
             }
         }
     }
@@ -126,7 +123,9 @@ class FavouriteViewModel @Inject constructor(
     }
 
     fun onNewCurrencyClick(currency: String) {
-        exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(currency = currency)
+        exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
+            currency = currency,
+        )
         fetchRates(currency = currency)
     }
 

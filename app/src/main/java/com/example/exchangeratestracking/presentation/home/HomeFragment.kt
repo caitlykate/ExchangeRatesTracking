@@ -7,11 +7,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
 import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
 import com.example.exchangeratestracking.presentation.BaseFragment
+import com.example.exchangeratestracking.presentation.ExchangeRatesAdapter
 import com.example.exchangeratestracking.presentation.SpinnerAdapter
 import com.example.exchangeratestracking.presentation.entity.SortType
 import com.example.exchangeratestracking.presentation.entity.listOfCurrencies
@@ -36,16 +36,16 @@ class HomeFragment : BaseFragment() {
     }
 
     private val adapter by lazy {
-        HomeAdapter { currency, isPressed ->
-            viewModel.onFavClick(currency, isPressed)
+        ExchangeRatesAdapter { currency ->
+            viewModel.onFavClick(currency)
         }
     }
 
     private val spinnerAdapter = SpinnerAdapter(listOfCurrencies)
 
     override fun onSetupLayout() {
-        recyclerViewContent.adapter = adapter
-        spinnerCurrency.adapter = spinnerAdapter
+        recycler_view_content.adapter = adapter
+        spinner_currency.adapter = spinnerAdapter
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(SortFragment.SORT_TYPE)
             ?.observe(viewLifecycleOwner) { sortType ->
@@ -56,13 +56,13 @@ class HomeFragment : BaseFragment() {
     override fun onCollectFlow() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.collect { uiState ->
-                recyclerViewContent.isVisible = !uiState.rates.isEmpty()
-                emptyTV.isVisible = uiState.rates.isEmpty()
-                progressBar.isVisible = uiState.isLoaderVisible
-                errorLayout.isVisible = uiState.hasError
+                recycler_view_content.isVisible = !uiState.rates.isEmpty()
+                text_view_empty_list.isVisible = uiState.rates.isEmpty()
+                progress_bar.isVisible = uiState.isLoaderVisible
+                layout_error.isVisible = uiState.hasError
                 adapter.exchangeRates = uiState.rates
                 sort = uiState.sort
-                textViewSort.text = getString(sort.titleRes)
+                text_view_sort.text = getString(sort.titleRes)
             }
         }
         lifecycleScope.launchWhenStarted {
@@ -73,7 +73,7 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun setOnClicks() {
-        spinnerCurrency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinner_currency.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -85,14 +85,14 @@ class HomeFragment : BaseFragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        textViewSort.setOnClickListener {
+        text_view_sort.setOnClickListener {
             openSortFrag()
         }
-        errorBtn.setOnClickListener {
+        button_error.setOnClickListener {
             viewModel.onRefresh()
         }
-        ratesSwipeRefreshLayout.setOnRefreshListener {
-            ratesSwipeRefreshLayout.isRefreshing = false
+        swipe_refresh_layout.setOnRefreshListener {
+            swipe_refresh_layout.isRefreshing = false
             viewModel.onRefresh()
         }
     }
@@ -102,14 +102,14 @@ class HomeFragment : BaseFragment() {
        findNavController().navigate(
            R.id.action_navigation_home_to_sortFragment,
            bundleOf(SortFragment.SORT_TYPE to sort),
-           navOptions {
-                anim {
-                    enter = R.anim.enter
-                    exit = R.anim.exit
+//           navOptions {
+//                anim {
+//                    enter = R.anim.enter
+//                    exit = R.anim.exit
 //                    popEnter = R.anim.pop_enter
 //                    popExit = R.anim.pop_exit
-                }
-           }
+//                }
+//           }
        )
     }
 }

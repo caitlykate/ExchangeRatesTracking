@@ -1,8 +1,7 @@
-package com.example.exchangeratestracking.presentation.home
+package com.example.exchangeratestracking.presentation
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
@@ -11,9 +10,7 @@ import com.example.exchangeratestracking.databinding.ItemExchangeRateBinding
 import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import kotlinx.android.synthetic.main.item_exchange_rate.view.*
 
-class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) -> Unit,
-) : RecyclerView.Adapter<HomeAdapter.HomeHolder>() {
-
+class ExchangeRatesAdapter(private val onItemClick: (currency: String) -> Unit) : RecyclerView.Adapter<ExchangeRatesAdapter.HomeHolder>() {
 
     var favRates: List<String> = emptyList()
         set(newExchangeRateList) {
@@ -65,10 +62,7 @@ class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) ->
 
         init {
             itemView.fav_iv.setOnClickListener { view ->
-                val currencyIsFav = isFav(exchangeRate.currency)
-                changeFavImg(view.fav_iv, currencyIsFav)
-                this@HomeAdapter.onItemClick(exchangeRate.currency, currencyIsFav)
-
+                this@ExchangeRatesAdapter.onItemClick(exchangeRate.currency)
             }
         }
 
@@ -85,5 +79,4 @@ class HomeAdapter(private val onItemClick: (currency: String, isFav: Boolean) ->
             }
         }
     }
-
 }

@@ -11,14 +11,13 @@
     android:paddingEnd="16dp">
 
     <TextView
-        android:id="@+id/textViewValueTitle"
-        style="@style/TextAppearance.H4"
+        android:id="@+id/text_view_sort_type"
+        android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginEnd="8dp"
         android:textColor="@color/textcolor_filter_value"
-        tools:text="Размер" />
-
+        tools:text="@string/sort" />
 
 </RelativeLayout>
