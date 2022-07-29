@@ -16,6 +16,7 @@ import com.example.exchangeratestracking.presentation.entity.SortType
 import com.example.exchangeratestracking.presentation.home.HomeAdapter
 import com.example.exchangeratestracking.presentation.sort.SortFragment
 import kotlinx.android.synthetic.main.fragment_base.*
+import kotlinx.coroutines.flow.first
 
 class FavouriteFragment : BaseFragment() {
 
@@ -37,6 +38,9 @@ class FavouriteFragment : BaseFragment() {
     private val adapter by lazy {
         HomeAdapter { currency, isPressed ->
             viewModel.onFavClick(currency, isPressed)
+            {
+                spinnerCurrency.getSelectedItem().toString()
+            }
         }
     }
 
@@ -71,6 +75,8 @@ class FavouriteFragment : BaseFragment() {
         }
         lifecycleScope.launchWhenStarted {
             viewModel.favCurrenciesStateFlow.collect { favCurrencies ->
+                noFavTextView.isVisible = favCurrencies.isEmpty()
+                layoutSort.isVisible = favCurrencies.isNotEmpty()
                 adapter.favRates = favCurrencies
                 spinnerAdapter.newItems = favCurrencies
             }
@@ -91,7 +97,6 @@ class FavouriteFragment : BaseFragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
-//        spinnerCurrency.
         textViewSort.setOnClickListener {
             openSortFrag()
         }

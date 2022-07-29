@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.example.exchangeratestracking.R
 import com.example.exchangeratestracking.appComponent
 import com.example.exchangeratestracking.di.component.DaggerHomeScreenComponent
@@ -96,12 +97,19 @@ class HomeFragment : BaseFragment() {
         }
     }
 
-    //добавить анимацию
     private fun openSortFrag() {
 
        findNavController().navigate(
-            R.id.action_navigation_home_to_sortFragment,
-            bundleOf(SortFragment.SORT_TYPE to sort)
+           R.id.action_navigation_home_to_sortFragment,
+           bundleOf(SortFragment.SORT_TYPE to sort),
+           navOptions {
+                anim {
+                    enter = R.anim.enter
+                    exit = R.anim.exit
+//                    popEnter = R.anim.pop_enter
+//                    popExit = R.anim.pop_exit
+                }
+           }
        )
     }
 }

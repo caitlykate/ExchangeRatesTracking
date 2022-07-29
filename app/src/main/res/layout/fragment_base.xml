@@ -54,6 +54,7 @@
             android:textColor="@color/blue_zodiac"/>
     </LinearLayout>
 
+
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
@@ -91,6 +92,14 @@
             tools:visibility="visible" />
 
         <TextView
+            android:id="@+id/noFavTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_fav"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/emptyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,6 +133,7 @@
             </Button>
 
         </LinearLayout>
+
 
     </FrameLayout>
 </LinearLayout>

@@ -1,11 +1,9 @@
 package com.example.exchangeratestracking.presentation.favourite
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeratestracking.domain.usecase.DeleteFavCurrencyUseCase
 import com.example.exchangeratestracking.domain.usecase.favourite.GetFavCurrenciesUseCase
-import com.example.exchangeratestracking.domain.usecase.InsertFavCurrencyUseCase
 import com.example.exchangeratestracking.domain.usecase.rates.GetCurrentRatesUseCase
 import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import com.example.exchangeratestracking.presentation.entity.ExchangeRatesState
@@ -25,7 +23,6 @@ import javax.inject.Inject
 class FavouriteViewModel @Inject constructor(
     private val getCurrentRatesUseCase: GetCurrentRatesUseCase,
     private val getFavCurrenciesUseCase: GetFavCurrenciesUseCase,
-    private val insertFavCurrencyUseCase: InsertFavCurrencyUseCase,
     private val deleteFavCurrencyUseCase: DeleteFavCurrencyUseCase,
 ) : ViewModel() {
 
@@ -34,7 +31,7 @@ class FavouriteViewModel @Inject constructor(
             rates = mutableListOf(),
             loadingState = LoadingState.Success,
             sort = SortType.AZ,
-            currency = "" //favCurrenciesMutableStateFlow.value.first() //listOfCurrencies.first(),
+            currency = ""
         )
     )
     val uiState: Flow<ExchangeRatesUiState> = exchangeRatesStateMutableStateFlow.map { state ->
@@ -62,7 +59,7 @@ class FavouriteViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val job = launch{fetchFavCurrencies()}
+            val job = launch { fetchFavCurrencies() }
             job.join()
             fetchRates(currency = exchangeRatesStateMutableStateFlow.value.currency)
         }
@@ -93,7 +90,9 @@ class FavouriteViewModel @Inject constructor(
         }
     }
 
-    fun onFavClick(currency: String, isPressed: Boolean) {
+    fun onFavClick(currency: String, isPressed: Boolean
+                   , spinnerSelectedItem: () -> String
+    ) {
         var setNewRate = false
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -103,33 +102,22 @@ class FavouriteViewModel @Inject constructor(
                     setNewRate = true
                 }
                 exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-                    rates = exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency!=currency }
+                    rates = exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency != currency },
                 )
-//                exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency!=currency }
-                favCurrenciesMutableStateFlow.value.filter { cur -> cur!=currency }
+                favCurrenciesMutableStateFlow.value.filter { cur -> cur != currency }
             } catch (ex: Exception) {
-                ex.message?.let { Log.e("error", it) }
                 //TODO вывод ошибки в тосте
             }
-            if (setNewRate) {
-                fetchRates(exchangeRatesStateMutableStateFlow.value.currency)
+            if (setNewRate && exchangeRatesStateMutableStateFlow.value.rates.isNotEmpty()) {
+                Thread.sleep(30)    //костыль (потому что спиннер сам меняет валюту в главном потоке без вызова onItemSelectedListener)
+                fetchRates(spinnerSelectedItem())
             }
-
         }
     }
-//
-//    private fun fetchFavCurrencies() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            getFavCurrenciesUseCase.execute().collect { favCurrencies ->
-//                favCurrenciesMutableStateFlow.value = favCurrencies
-//            }
-//        }
-//    }
-
 
     private suspend fun fetchFavCurrencies() {
-            getFavCurrenciesUseCase.execute().collect { favCurrencies ->
-                favCurrenciesMutableStateFlow.value = favCurrencies.sorted()
+        getFavCurrenciesUseCase.execute().collect { favCurrencies ->
+            favCurrenciesMutableStateFlow.value = favCurrencies.sorted()
         }
     }
 
