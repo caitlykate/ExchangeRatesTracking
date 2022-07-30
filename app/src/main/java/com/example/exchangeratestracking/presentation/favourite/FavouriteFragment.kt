@@ -35,14 +35,9 @@ class FavouriteFragment : BaseFragment() {
     }
 
     private val adapter by lazy {
-        ExchangeRatesAdapter { currency
-//                      , isPressed
-            ->
-            viewModel.onFavClick(currency
-//                , isPressed
-            )
-            {
-                spinner_currency.getSelectedItem().toString()
+        ExchangeRatesAdapter { currency ->
+            viewModel.onFavClick(currency) {
+                spinner_currency.selectedItem.toString()
             }
         }
     }
@@ -50,14 +45,14 @@ class FavouriteFragment : BaseFragment() {
     private val spinnerAdapter by lazy {
         SpinnerAdapter(viewModel.favCurrenciesStateFlow.value)
     }
-//
-//    private  lateinit var spinnerAdapter : SpinnerAdapter
 
     override fun onSetupLayout() {
         recycler_view_content.adapter = adapter
         spinner_currency.adapter = spinnerAdapter
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(SortFragment.SORT_TYPE)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(
+            SortFragment.SORT_TYPE
+        )
             ?.observe(viewLifecycleOwner) { sortType ->
                 viewModel.onNewSortClick(sortType)
             }
@@ -94,7 +89,9 @@ class FavouriteFragment : BaseFragment() {
                 position: Int,
                 id: Long
             ) {
-                viewModel.onNewCurrencyClick(currency = spinner_currency.adapter.getItem(position).toString()) //мб лучше брать из состояния во viewModel
+                viewModel.onNewCurrencyClick(
+                    currency = spinner_currency.adapter.getItem(position).toString()
+                ) //мб лучше брать из состояния во viewModel
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -112,7 +109,7 @@ class FavouriteFragment : BaseFragment() {
         }
     }
 
-    //добавить анимацию
+    //можно добавить анимацию
     private fun openSortFrag() {
 
         findNavController().navigate(

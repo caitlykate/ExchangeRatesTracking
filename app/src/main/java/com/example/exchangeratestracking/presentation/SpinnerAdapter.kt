@@ -9,7 +9,7 @@ import com.example.exchangeratestracking.databinding.ItemSpinnerBinding
 
 class SpinnerAdapter(
     private var items: List<String>
-): BaseAdapter()  {
+) : BaseAdapter() {
 
     var newItems: List<String> = emptyList()
         set(value) {

@@ -54,7 +54,8 @@ class FavouriteViewModel @Inject constructor(
         }
     }
 
-    private val favCurrenciesMutableStateFlow: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    private val favCurrenciesMutableStateFlow: MutableStateFlow<List<String>> =
+        MutableStateFlow(emptyList())
     val favCurrenciesStateFlow: StateFlow<List<String>> = favCurrenciesMutableStateFlow
 
     init {
@@ -77,15 +78,17 @@ class FavouriteViewModel @Inject constructor(
                         it.currency in favCurrenciesMutableStateFlow.value
                     }
 
-                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-                    rates = newRates,
-                    loadingState = LoadingState.Success,
-                )
+                exchangeRatesStateMutableStateFlow.value =
+                    exchangeRatesStateMutableStateFlow.value.copy(
+                        rates = newRates,
+                        loadingState = LoadingState.Success,
+                    )
 
             } catch (ex: Exception) {
-                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-                    loadingState = LoadingState.Error,
-                )
+                exchangeRatesStateMutableStateFlow.value =
+                    exchangeRatesStateMutableStateFlow.value.copy(
+                        loadingState = LoadingState.Error,
+                    )
             }
         }
     }
@@ -98,9 +101,10 @@ class FavouriteViewModel @Inject constructor(
                 if (currency == exchangeRatesStateMutableStateFlow.value.currency) {
                     setNewRate = true
                 }
-                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-                    rates = exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency != currency }
-                )
+                exchangeRatesStateMutableStateFlow.value =
+                    exchangeRatesStateMutableStateFlow.value.copy(
+                        rates = exchangeRatesStateMutableStateFlow.value.rates.filter { exchangeRate -> exchangeRate.currency != currency }
+                    )
                 favCurrenciesMutableStateFlow.value.filter { cur -> cur != currency }
             } catch (ex: Exception) {
                 //TODO вывод ошибки в тосте

@@ -50,7 +50,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val favCurrenciesMutableStateFlow: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
+    private val favCurrenciesMutableStateFlow: MutableStateFlow<List<String>> =
+        MutableStateFlow(emptyList())
     val favCurrenciesStateFlow: StateFlow<List<String>> = favCurrenciesMutableStateFlow
 
     init {
@@ -67,23 +68,22 @@ class HomeViewModel @Inject constructor(
             try {
                 val newRates = getCurrentRatesUseCase.execute(base = currency)
 
-                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-                    rates = newRates,
-                    loadingState = LoadingState.Success,
-                )
+                exchangeRatesStateMutableStateFlow.value =
+                    exchangeRatesStateMutableStateFlow.value.copy(
+                        rates = newRates,
+                        loadingState = LoadingState.Success,
+                    )
 
             } catch (ex: Exception) {
-                exchangeRatesStateMutableStateFlow.value = exchangeRatesStateMutableStateFlow.value.copy(
-                    loadingState = LoadingState.Error,
-                )
+                exchangeRatesStateMutableStateFlow.value =
+                    exchangeRatesStateMutableStateFlow.value.copy(
+                        loadingState = LoadingState.Error,
+                    )
             }
         }
     }
 
-    fun onFavClick(
-        currency: String,
-//                   isPressed: Boolean
-    ) {
+    fun onFavClick(currency: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (currency in favCurrenciesMutableStateFlow.value) {

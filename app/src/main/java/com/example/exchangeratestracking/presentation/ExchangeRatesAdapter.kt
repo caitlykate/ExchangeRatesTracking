@@ -10,7 +10,8 @@ import com.example.exchangeratestracking.databinding.ItemExchangeRateBinding
 import com.example.exchangeratestracking.presentation.entity.ExchangeRate
 import kotlinx.android.synthetic.main.item_exchange_rate.view.*
 
-class ExchangeRatesAdapter(private val onItemClick: (currency: String) -> Unit) : RecyclerView.Adapter<ExchangeRatesAdapter.HomeHolder>() {
+class ExchangeRatesAdapter(private val onItemClick: (currency: String) -> Unit) :
+    RecyclerView.Adapter<ExchangeRatesAdapter.HomeHolder>() {
 
     var favRates: List<String> = emptyList()
         set(newExchangeRateList) {
@@ -19,11 +20,11 @@ class ExchangeRatesAdapter(private val onItemClick: (currency: String) -> Unit) 
         }
 
     var exchangeRates: List<ExchangeRate> = emptyList()
-    @SuppressLint("NotifyDataSetChanged")
-    set(newExchangeRateList) {
-        field = newExchangeRateList
-        notifyDataSetChanged()
-    }
+        @SuppressLint("NotifyDataSetChanged")
+        set(newExchangeRateList) {
+            field = newExchangeRateList
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeHolder {
         return HomeHolder(parent = parent)
@@ -37,7 +38,7 @@ class ExchangeRatesAdapter(private val onItemClick: (currency: String) -> Unit) 
         return exchangeRates.size
     }
 
-    private fun changeFavImg(view: ImageView, isFav: Boolean){
+    private fun changeFavImg(view: ImageView, isFav: Boolean) {
         if (isFav) {
             view.setImageResource(R.drawable.ic_star_border)
         } else {
@@ -45,7 +46,7 @@ class ExchangeRatesAdapter(private val onItemClick: (currency: String) -> Unit) 
         }
     }
 
-    private fun isFav(currency: String): Boolean{
+    private fun isFav(currency: String): Boolean {
         return currency in favRates
     }
 

@@ -47,7 +47,9 @@ class HomeFragment : BaseFragment() {
         recycler_view_content.adapter = adapter
         spinner_currency.adapter = spinnerAdapter
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(SortFragment.SORT_TYPE)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<SortType>(
+            SortFragment.SORT_TYPE
+        )
             ?.observe(viewLifecycleOwner) { sortType ->
                 viewModel.onNewSortClick(sortType)
             }
@@ -66,7 +68,7 @@ class HomeFragment : BaseFragment() {
             }
         }
         lifecycleScope.launchWhenStarted {
-            viewModel.favCurrenciesStateFlow.collect{ favCurrencies ->
+            viewModel.favCurrenciesStateFlow.collect { favCurrencies ->
                 adapter.favRates = favCurrencies
             }
         }
@@ -99,9 +101,9 @@ class HomeFragment : BaseFragment() {
 
     private fun openSortFrag() {
 
-       findNavController().navigate(
-           R.id.action_navigation_home_to_sortFragment,
-           bundleOf(SortFragment.SORT_TYPE to sort),
+        findNavController().navigate(
+            R.id.action_navigation_home_to_sortFragment,
+            bundleOf(SortFragment.SORT_TYPE to sort),
 //           navOptions {
 //                anim {
 //                    enter = R.anim.enter
@@ -110,6 +112,6 @@ class HomeFragment : BaseFragment() {
 //                    popExit = R.anim.pop_exit
 //                }
 //           }
-       )
+        )
     }
 }

@@ -50,15 +50,8 @@ class SortValuesAdapter constructor(
         }
 
         fun onBind(sortType: SortType) = with(binding) {
-            textViewValueTitle.text = parent.context.getString(sortType.titleRes)
-            textViewValueTitle.isSelected = (sortType == checkedSortType)
+            textViewSortType.text = parent.context.getString(sortType.titleRes)
+            textViewSortType.isSelected = (sortType == checkedSortType)
         }
     }
 }
-
-//@Parcelize
-//data class SortTypeListItem(
-//    val id: Int,
-//    var type: SortType,
-//    var isChecked: Boolean
-//) : Parcelable
